@@ -54,11 +54,13 @@ const generateEdoIntervalsBtn = document.getElementById('generate-edo-intervals-
 const soundEnabledInput = document.getElementById('sound-enabled');
 const playIntervalsInput = document.getElementById('play-intervals');
 const roundsInput = document.getElementById('rounds');
+const hideIntervalInput = document.getElementById('hide-interval');
 
 // Audio context and sound settings
 let audioContext = null;
 let soundEnabled = true;
 let playIntervals = true;
+let hideInterval = false;
 let numRounds = 1;
 
 // Initialize audio context on first user interaction
@@ -552,6 +554,15 @@ skipBtn.addEventListener('click', () => {
         return;
     }
 
+    // Reveal interval if it was hidden
+    if (hideInterval) {
+        if (currentInterval.type === 'JI') {
+            intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+        } else {
+            intervalValue.textContent = currentInterval.display;
+        }
+    }
+
     feedback.textContent = `Skipped. The answer was ${currentAnswer.toFixed(2)}¢`;
     feedback.className = 'feedback';
     feedback.style.background = '#fff3cd';
@@ -589,6 +600,7 @@ function startGame() {
     jiLimit = parseInt(jiLimitInput.value) || 20;
     soundEnabled = soundEnabledInput.checked;
     playIntervals = playIntervalsInput.checked;
+    hideInterval = hideIntervalInput.checked;
     numRounds = parseInt(roundsInput.value) || 1;
 
     const edoInput = edoListInput.value.trim();
@@ -782,13 +794,17 @@ function nextQuestion() {
         currentAnswer = (currentInterval.step / currentInterval.edo) * 1200;
     }
 
-    // Display interval
-    if (currentInterval.type === 'JI') {
-        // Display JI intervals as vertical fractions
-        intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+    // Display interval (or hide it if audio-only mode)
+    if (hideInterval) {
+        intervalValue.innerHTML = '<span class="hidden-interval">?</span>';
     } else {
-        // Display EDO intervals as normal text
-        intervalValue.textContent = currentInterval.display;
+        if (currentInterval.type === 'JI') {
+            // Display JI intervals as vertical fractions
+            intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+        } else {
+            // Display EDO intervals as normal text
+            intervalValue.textContent = currentInterval.display;
+        }
     }
     answerInput.value = '';
     answerInput.focus();
@@ -834,6 +850,15 @@ function submitAnswer() {
 
     // Update continuum markers
     updateContinuumMarkers(currentAnswer, userAnswer);
+
+    // Reveal interval if it was hidden
+    if (hideInterval) {
+        if (currentInterval.type === 'JI') {
+            intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+        } else {
+            intervalValue.textContent = currentInterval.display;
+        }
+    }
 
     // Show feedback and play sound
     feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
