@@ -247,7 +247,7 @@ function generateIntervals() {
     let intervalArray = Array.from(intervals);
 
     const removeComplex = removeComplexInput.checked;
-    const complexityLimit = parseInt(complexityLimitInput.value) || 50000;
+    const complexityLimit = parseInt(complexityLimitInput.value) || 10000;
 
     if (removeComplex) {
         intervalArray = intervalArray.filter(interval => {
