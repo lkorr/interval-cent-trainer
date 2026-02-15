@@ -423,10 +423,16 @@ function generateIntervals() {
 
     // Get existing intervals from the textarea
     const existingText = customIntervalsInput.value.trim();
-    const existingIntervals = existingText ? existingText.split('\n') : [];
+    const existingIntervals = existingText ? existingText.split('\n').map(s => s.trim()).filter(s => s) : [];
 
-    // Append new intervals
-    const allIntervals = [...existingIntervals, ...intervalArray];
+    // Create a set to avoid duplicates
+    const intervalSet = new Set(existingIntervals);
+
+    // Add new intervals (only if not already present)
+    intervalArray.forEach(interval => intervalSet.add(interval));
+
+    // Convert back to array and join
+    const allIntervals = Array.from(intervalSet);
     customIntervalsInput.value = allIntervals.join('\n');
 }
 
@@ -513,10 +519,16 @@ function generateEdoIntervals() {
 
     // Get existing intervals from the textarea
     const existingText = customIntervalsInput.value.trim();
-    const existingIntervals = existingText ? existingText.split('\n') : [];
+    const existingIntervals = existingText ? existingText.split('\n').map(s => s.trim()).filter(s => s) : [];
 
-    // Append new intervals
-    const allIntervals = [...existingIntervals, ...intervals];
+    // Create a set to avoid duplicates
+    const intervalSet = new Set(existingIntervals);
+
+    // Add new intervals (only if not already present)
+    intervals.forEach(interval => intervalSet.add(interval));
+
+    // Convert back to array and join
+    const allIntervals = Array.from(intervalSet);
     customIntervalsInput.value = allIntervals.join('\n');
 
     console.log(`Generated ${intervals.length} EDO intervals`);
