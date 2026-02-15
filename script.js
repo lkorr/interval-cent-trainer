@@ -12,9 +12,7 @@ let timerInterval = null;
 let waitingForNext = false;
 
 // Settings
-let jiEnabled = true;
 let jiLimit = 20;
-let edoEnabled = false;
 let edoList = [];
 
 // DOM elements
@@ -37,7 +35,6 @@ const continuumTrack = document.querySelector('.continuum-track');
 const continuum = document.querySelector('.continuum');
 
 // Settings controls
-const enableJi = document.getElementById('enable-ji');
 const jiSettings = document.getElementById('ji-settings');
 const jiModeRadios = document.querySelectorAll('input[name="ji-mode"]');
 const jiCustomSettings = document.getElementById('ji-custom-settings');
@@ -48,7 +45,6 @@ const jiLimitInput = document.getElementById('ji-limit');
 const removeComplexInput = document.getElementById('remove-complex');
 const complexityLimitInput = document.getElementById('complexity-limit');
 const generateIntervalsBtn = document.getElementById('generate-intervals-btn');
-const enableEdo = document.getElementById('enable-edo');
 const edoListInput = document.getElementById('edo-list');
 const edoSettings = document.getElementById('edo-settings');
 const edoAllIntervals = document.getElementById('edo-all-intervals');
@@ -188,14 +184,7 @@ function playSound(accuracy) {
     }
 }
 
-// Event listeners for settings
-enableJi.addEventListener('change', () => {
-    jiSettings.style.display = enableJi.checked ? 'block' : 'none';
-});
-
-enableEdo.addEventListener('change', () => {
-    edoSettings.style.display = enableEdo.checked ? 'block' : 'none';
-});
+// Event listeners for settings (removed enable checkboxes, so these listeners are no longer needed)
 
 // Generate intervals
 console.log('generateIntervalsBtn:', generateIntervalsBtn);
@@ -211,6 +200,27 @@ if (generateEdoIntervalsBtn) {
 } else {
     console.error('Generate EDO intervals button not found!');
 }
+
+// Clear intervals button
+const clearIntervalsBtn = document.getElementById('clear-intervals-btn');
+if (clearIntervalsBtn) {
+    clearIntervalsBtn.addEventListener('click', () => {
+        customIntervalsInput.value = '';
+    });
+}
+
+// Make EDO checkboxes mutually exclusive
+edoAllIntervals.addEventListener('change', () => {
+    if (edoAllIntervals.checked) {
+        edoUseApproximations.checked = false;
+    }
+});
+
+edoUseApproximations.addEventListener('change', () => {
+    if (edoUseApproximations.checked) {
+        edoAllIntervals.checked = false;
+    }
+});
 
 function generateIntervals() {
     console.log('Generate intervals button clicked');
@@ -324,7 +334,13 @@ function generateIntervals() {
         return;
     }
 
-    customIntervalsInput.value = intervalArray.join('\n');
+    // Get existing intervals from the textarea
+    const existingText = customIntervalsInput.value.trim();
+    const existingIntervals = existingText ? existingText.split('\n') : [];
+
+    // Append new intervals
+    const allIntervals = [...existingIntervals, ...intervalArray];
+    customIntervalsInput.value = allIntervals.join('\n');
 }
 
 function generateEdoIntervals() {
@@ -332,7 +348,7 @@ function generateEdoIntervals() {
 
     const edoInput = edoListInput.value.trim();
     if (!edoInput) {
-        alert('Please enter EDO values (e.g., 12,17,24)');
+        alert('Please enter EDO values (e.g., 17,19,22,26,31)');
         return;
     }
 
@@ -344,6 +360,13 @@ function generateEdoIntervals() {
 
     const intervals = [];
     const useApproximations = edoUseApproximations.checked;
+    const useAllIntervals = edoAllIntervals.checked;
+
+    // If neither checkbox is selected, prompt user
+    if (!useApproximations && !useAllIntervals) {
+        alert('Please select either "All EDO intervals" or "Use approximations"');
+        return;
+    }
 
     if (useApproximations) {
         // Generate approximations of specific intervals
@@ -563,21 +586,13 @@ function startGame() {
     initAudio();
 
     // Read settings
-    jiEnabled = enableJi.checked;
-    console.log('jiEnabled:', jiEnabled);
     jiLimit = parseInt(jiLimitInput.value) || 20;
-    edoEnabled = enableEdo.checked;
     soundEnabled = soundEnabledInput.checked;
     playIntervals = playIntervalsInput.checked;
     numRounds = parseInt(roundsInput.value) || 1;
 
-    if (edoEnabled) {
-        const edoInput = edoListInput.value.trim();
-        edoList = edoInput.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
-    }
-
-    // Validate settings - just check if custom intervals textarea has content
-    // (Both JI and EDO generators populate this textarea)
+    const edoInput = edoListInput.value.trim();
+    edoList = edoInput.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
 
     // Initialize game state
     gameActive = true;

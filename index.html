@@ -24,10 +24,6 @@
                     <!-- Just Intonation Generator (Left) -->
                     <div class="generator-box">
                         <h4>Just Intonation</h4>
-                        <label>
-                            <input type="checkbox" id="enable-ji" checked>
-                            Enable JI Intervals
-                        </label>
 
                         <div id="ji-settings">
                             <label>
@@ -74,15 +70,11 @@
                     <!-- EDO Generator (Right) -->
                     <div class="generator-box">
                         <h4>Equal Divisions of the Octave (EDO)</h4>
-                        <label>
-                            <input type="checkbox" id="enable-edo">
-                            Enable EDO Intervals
-                        </label>
 
-                        <div id="edo-settings" style="display: none;">
+                        <div id="edo-settings">
                             <label>
-                                EDOs (comma-separated):
-                                <input type="text" id="edo-list" placeholder="12,17,24,31" value="12">
+                                EDOs (comma-separated, e.g., 17, 19, 22, 26, 31, ...):
+                                <input type="text" id="edo-list" placeholder="17,19,22,26,31" value="17">
                             </label>
 
                             <label>
@@ -111,6 +103,7 @@
                         Custom intervals (one per line, e.g., "3/2", "5/4", "7/6", "1\12", "7\12"):
                         <textarea id="custom-intervals" rows="6" placeholder="3/2&#10;5/4&#10;7/6&#10;9/8&#10;11/8&#10;15/8"></textarea>
                     </label>
+                    <button id="clear-intervals-btn" class="btn-secondary" type="button">Clear</button>
                 </div>
             </div>
 
