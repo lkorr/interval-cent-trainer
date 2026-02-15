@@ -403,6 +403,14 @@ function startGame() {
         buildEDOIntervals();
     }
 
+    // Check if we have any intervals
+    if (intervalPool.length === 0) {
+        alert('No intervals to practice! Please configure at least one interval source.');
+        gamePanel.style.display = 'none';
+        settingsPanel.style.display = 'block';
+        return;
+    }
+
     // Shuffle and multiply intervals by number of rounds
     shuffleArray(intervalPool);
 
@@ -452,7 +460,7 @@ function buildJIIntervals() {
 function buildCustomJIIntervals() {
     const customText = customIntervalsInput.value.trim();
     if (!customText) {
-        alert('Please enter at least one interval in the custom interval bank');
+        // Don't alert here - let the main validation handle it
         return;
     }
 
@@ -482,10 +490,6 @@ function buildCustomJIIntervals() {
             denominator: den,
             display: `${num}/${den}`
         });
-    }
-
-    if (intervalPool.length === 0) {
-        alert('No valid intervals found in the custom interval bank');
     }
 }
 
