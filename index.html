@@ -30,12 +30,6 @@
                             <h4>Interval Generator</h4>
 
                             <label>
-                                <input type="radio" name="generator-mode" value="simple-limit">
-                                All fractions with limit (max numerator/denominator):
-                                <input type="number" id="ji-limit" min="2" max="100" value="20">
-                            </label>
-
-                            <label>
                                 <input type="radio" name="generator-mode" value="primes-2x" checked>
                                 Primes/2^x (primes only in numerator)
                             </label>
@@ -48,6 +42,12 @@
                             <label>
                                 <input type="radio" name="generator-mode" value="products">
                                 Products (composite numbers, n-limit JI)
+                            </label>
+
+                            <label class="inline-number">
+                                <input type="radio" name="generator-mode" value="simple-limit">
+                                All fractions with limit (max numerator/denominator):
+                                <input type="number" id="ji-limit" min="2" max="100" value="20" class="small-number-input">
                             </label>
 
                             <div class="prime-settings">

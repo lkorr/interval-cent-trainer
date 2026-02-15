@@ -126,6 +126,18 @@ textarea:focus {
     border-color: #667eea;
 }
 
+.inline-number {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.small-number-input {
+    width: 80px !important;
+    margin-top: 0 !important;
+    display: inline-block;
+}
+
 .btn-primary {
     width: 100%;
     padding: 15px;
