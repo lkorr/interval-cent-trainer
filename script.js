@@ -149,10 +149,23 @@ enableEdo.addEventListener('change', () => {
 });
 
 // Generate intervals
-generateIntervalsBtn.addEventListener('click', generateIntervals);
+console.log('generateIntervalsBtn:', generateIntervalsBtn);
+if (generateIntervalsBtn) {
+    generateIntervalsBtn.addEventListener('click', generateIntervals);
+} else {
+    console.error('Generate intervals button not found!');
+}
 
 function generateIntervals() {
-    const generatorMode = document.querySelector('input[name="generator-mode"]:checked').value;
+    console.log('Generate intervals button clicked');
+    const generatorModeElement = document.querySelector('input[name="generator-mode"]:checked');
+    console.log('Generator mode element:', generatorModeElement);
+    if (!generatorModeElement) {
+        alert('Please select a generator mode');
+        return;
+    }
+    const generatorMode = generatorModeElement.value;
+    console.log('Generator mode:', generatorMode);
     const primeLimit = parseInt(primeLimitInput.value) || 7;
     const maxExponent = parseInt(primeExponentInput.value) || 1;
     const limit = parseInt(jiLimitInput.value) || 20;
