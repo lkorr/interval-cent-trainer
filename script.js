@@ -57,10 +57,12 @@ const edoListInput = document.getElementById('edo-list');
 const edoSettings = document.getElementById('edo-settings');
 const edoAllowNegativeInput = document.getElementById('edo-allow-negative');
 const soundEnabledInput = document.getElementById('sound-enabled');
+const roundsInput = document.getElementById('rounds');
 
 // Audio context and sound settings
 let audioContext = null;
 let soundEnabled = true;
+let numRounds = 1;
 
 // Initialize audio context on first user interaction
 function initAudio() {
@@ -363,6 +365,7 @@ function startGame() {
     edoEnabled = enableEdo.checked;
     edoAllowNegative = edoAllowNegativeInput.checked;
     soundEnabled = soundEnabledInput.checked;
+    numRounds = parseInt(roundsInput.value) || 1;
 
     if (edoEnabled) {
         const edoInput = edoListInput.value.trim();
@@ -400,10 +403,18 @@ function startGame() {
         buildEDOIntervals();
     }
 
-    // Shuffle and select 2n problems
+    // Shuffle and multiply intervals by number of rounds
     shuffleArray(intervalPool);
-    totalQuestions = Math.min(intervalPool.length * 2, intervalPool.length);
-    remainingIntervals = [...intervalPool];
+
+    // Create the full pool with numRounds copies of each interval
+    remainingIntervals = [];
+    for (let round = 0; round < numRounds; round++) {
+        const roundCopy = [...intervalPool];
+        shuffleArray(roundCopy);
+        remainingIntervals.push(...roundCopy);
+    }
+
+    totalQuestions = remainingIntervals.length;
 
     // Start timer
     startTime = Date.now();
