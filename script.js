@@ -783,7 +783,13 @@ function nextQuestion() {
     }
 
     // Display interval
-    intervalValue.textContent = currentInterval.display;
+    if (currentInterval.type === 'JI') {
+        // Display JI intervals as vertical fractions
+        intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+    } else {
+        // Display EDO intervals as normal text
+        intervalValue.textContent = currentInterval.display;
+    }
     answerInput.value = '';
     answerInput.focus();
     feedback.textContent = '';

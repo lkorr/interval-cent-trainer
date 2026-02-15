@@ -258,6 +258,23 @@ textarea:focus {
     font-family: 'Courier New', monospace;
 }
 
+/* Vertical fraction styling for JI intervals */
+.fraction {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.fraction .numerator {
+    border-bottom: 2px solid #333;
+    padding-bottom: 5px;
+}
+
+.fraction .denominator {
+    padding-top: 5px;
+}
+
 .input-section {
     display: flex;
     gap: 10px;
