@@ -61,12 +61,25 @@ let soundEnabled = true;
 function initAudio() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        console.log('Audio context initialized:', audioContext.state);
+    }
+    // Resume if suspended (required by some browsers)
+    if (audioContext.state === 'suspended') {
+        audioContext.resume().then(() => {
+            console.log('Audio context resumed');
+        });
     }
 }
 
 // Play sound based on accuracy
 function playSound(accuracy) {
+    console.log('playSound called:', accuracy, 'soundEnabled:', soundEnabled, 'audioContext:', audioContext);
     if (!soundEnabled || !audioContext) return;
+
+    // Ensure audio context is running
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
 
     const now = audioContext.currentTime;
 
