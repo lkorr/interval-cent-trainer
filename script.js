@@ -1124,7 +1124,7 @@ function submitAnswer() {
         feedback.style.border = '';
         playSound('excellent');
         // Track by accuracy
-        intervalsByAccuracy.perfect.push(currentInterval);
+        intervalsByAccuracy.perfect.push({ ...currentInterval, error });
     } else if (error < 5) {
         feedback.className = 'feedback correct';
         feedback.textContent = `Great! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
@@ -1133,7 +1133,7 @@ function submitAnswer() {
         feedback.style.border = '';
         playSound('excellent');
         // Track by accuracy
-        intervalsByAccuracy.excellent.push(currentInterval);
+        intervalsByAccuracy.excellent.push({ ...currentInterval, error });
     } else if (error < 10) {
         // Light green/yellow (lime-ish)
         feedback.className = 'feedback good';
@@ -1143,7 +1143,7 @@ function submitAnswer() {
         feedback.style.border = '2px solid #c4db9b';
         playSound('excellent');
         // Track by accuracy
-        intervalsByAccuracy.good.push(currentInterval);
+        intervalsByAccuracy.good.push({ ...currentInterval, error });
         missedIntervals.push(currentInterval);
     } else if (error < 25) {
         // Yellow
@@ -1154,7 +1154,7 @@ function submitAnswer() {
         feedback.style.border = '2px solid #ffeaa7';
         playSound('good');
         // Track by accuracy
-        intervalsByAccuracy.decent.push(currentInterval);
+        intervalsByAccuracy.decent.push({ ...currentInterval, error });
         missedIntervals.push(currentInterval);
     } else if (error < 40) {
         // Orange
@@ -1165,7 +1165,7 @@ function submitAnswer() {
         feedback.style.border = '2px solid #ffb366';
         playSound('good');
         // Track by accuracy
-        intervalsByAccuracy.poor.push(currentInterval);
+        intervalsByAccuracy.poor.push({ ...currentInterval, error });
         missedIntervals.push(currentInterval);
     } else {
         // Red
@@ -1176,7 +1176,7 @@ function submitAnswer() {
         feedback.style.border = '';
         playSound('wrong');
         // Track by accuracy
-        intervalsByAccuracy.bad.push(currentInterval);
+        intervalsByAccuracy.bad.push({ ...currentInterval, error });
         missedIntervals.push(currentInterval);
     }
 
@@ -1247,9 +1247,17 @@ function endGame() {
 
     ranges.forEach(range => {
         if (range.count > 0) {
-            accuracyHTML += `${range.label}: ${range.count} <button id="load-${range.key}-btn" class="btn-secondary" style="margin-left: 10px; font-size: 0.85em; padding: 3px 8px;">Load to Bank</button><br>`;
+            accuracyHTML += `${range.label}: ${range.count}<br>`;
         }
     });
+
+    // Add "Repeat with intervals missed by more than X¢" section
+    accuracyHTML += `<br><div style="margin-top: 10px;">
+        <label>Repeat with all intervals missed by more than
+        <input type="number" id="error-threshold-input" value="5" min="0" step="0.1" style="width: 60px; display: inline-block; margin: 0 5px;">¢
+        <button id="load-threshold-btn" class="btn-secondary" style="margin-left: 10px; font-size: 0.85em; padding: 5px 12px;">Load to Bank</button>
+        </label>
+    </div>`;
 
     // Show summary in game panel instead of alert
     feedback.innerHTML = `
@@ -1268,16 +1276,12 @@ function endGame() {
     feedback.style.border = '2px solid #ddd';
     feedback.style.padding = '20px';
 
-    // Add event listeners for all "Load to Bank" buttons
+    // Add event listener for threshold-based load to bank button
     setTimeout(() => {
-        ranges.forEach(range => {
-            if (range.count > 0) {
-                const btn = document.getElementById(`load-${range.key}-btn`);
-                if (btn) {
-                    btn.addEventListener('click', () => loadAccuracyRangeToBank(range.key));
-                }
-            }
-        });
+        const thresholdBtn = document.getElementById('load-threshold-btn');
+        if (thresholdBtn) {
+            thresholdBtn.addEventListener('click', loadThresholdToBank);
+        }
     }, 0);
 
     // Hide interval display and input
@@ -1314,13 +1318,25 @@ function endGame() {
     }
 }
 
-function loadAccuracyRangeToBank(rangeKey) {
-    // Get intervals for the specified accuracy range
-    const intervals = intervalsByAccuracy[rangeKey];
-    const intervalDisplays = intervals.map(interval => interval.display);
+function loadThresholdToBank() {
+    // Get the threshold value from the input
+    const thresholdInput = document.getElementById('error-threshold-input');
+    const threshold = parseFloat(thresholdInput.value);
+
+    // Collect all intervals that were missed by more than the threshold
+    const allIntervals = [];
+
+    // Check each interval in all accuracy ranges
+    for (const rangeKey in intervalsByAccuracy) {
+        for (const interval of intervalsByAccuracy[rangeKey]) {
+            if (interval.error > threshold) {
+                allIntervals.push(interval.display);
+            }
+        }
+    }
 
     // Clear the custom intervals textarea and fill with selected intervals
-    customIntervalsInput.value = intervalDisplays.join('\n');
+    customIntervalsInput.value = allIntervals.join('\n');
 
     // Return to settings panel
     document.querySelector('.interval-display').style.display = '';
@@ -1334,16 +1350,7 @@ function loadAccuracyRangeToBank(rangeKey) {
     gamePanel.style.display = 'none';
     settingsPanel.style.display = 'block';
 
-    const rangeLabels = {
-        perfect: 'Perfect (<1¢)',
-        excellent: 'Excellent (1-5¢)',
-        good: 'Good (5-10¢)',
-        decent: 'Decent (10-25¢)',
-        poor: 'Poor (25-40¢)',
-        bad: 'Bad (>40¢)'
-    };
-
-    alert(`Loaded ${intervals.length} ${rangeLabels[rangeKey]} intervals to the interval bank.`);
+    alert(`Loaded ${allIntervals.length} intervals with error > ${threshold}¢ to the interval bank.`);
 }
 
 function loadMissedToBank() {
