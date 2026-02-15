@@ -319,16 +319,41 @@ function shareIntervals() {
         return;
     }
 
-    // Encode intervals as base64 to keep URL clean
-    const encoded = btoa(customText);
+    // Gather all settings
+    const settings = {
+        intervals: customText,
+        // JI Generator settings
+        generatorMode: document.querySelector('input[name="generator-mode"]:checked')?.value,
+        primeLimit: primeLimitInput.value,
+        primeExponent: primeExponentInput.value,
+        jiLimit: jiLimitInput.value,
+        // EDO Generator settings
+        edoList: edoListInput.value,
+        edoAllIntervals: edoAllIntervals.checked,
+        edoUseApproximations: edoUseApproximations.checked,
+        edoApproximations: edoApproximations.value,
+        // Filter settings
+        complexityLimit: complexityLimitInput.value,
+        centMin: centMinInput.value,
+        centMax: centMaxInput.value,
+        // Audio settings
+        soundEnabled: soundEnabledInput.checked,
+        playIntervals: playIntervalsInput.checked,
+        // Game settings
+        rounds: roundsInput.value,
+        hideInterval: hideIntervalInput.checked
+    };
 
-    // Create URL with intervals parameter
-    const url = new URL(window.location.href);
-    url.searchParams.set('intervals', encoded);
+    // Encode settings as base64 JSON
+    const encoded = btoa(JSON.stringify(settings));
+
+    // Create URL with settings parameter
+    const url = new URL(window.location.href.split('?')[0]); // Remove existing params
+    url.searchParams.set('s', encoded);
 
     // Copy to clipboard
     navigator.clipboard.writeText(url.toString()).then(() => {
-        alert('URL copied to clipboard! Share this link to load these intervals.');
+        alert('URL copied to clipboard! Share this link to load all settings and intervals.');
     }).catch(err => {
         // Fallback for older browsers
         const textArea = document.createElement('textarea');
@@ -337,20 +362,67 @@ function shareIntervals() {
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        alert('URL copied to clipboard! Share this link to load these intervals.');
+        alert('URL copied to clipboard! Share this link to load all settings and intervals.');
     });
 }
 
 // Load intervals from URL on page load
 function loadIntervalsFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    const encoded = urlParams.get('intervals');
 
-    if (encoded) {
+    // Try new format first (all settings)
+    const settingsEncoded = urlParams.get('s');
+    if (settingsEncoded) {
         try {
-            const decoded = atob(encoded);
+            const settings = JSON.parse(atob(settingsEncoded));
+
+            // Load intervals
+            if (settings.intervals) {
+                customIntervalsInput.value = settings.intervals;
+            }
+
+            // Load JI Generator settings
+            if (settings.generatorMode) {
+                const radio = document.querySelector(`input[name="generator-mode"][value="${settings.generatorMode}"]`);
+                if (radio) radio.checked = true;
+            }
+            if (settings.primeLimit) primeLimitInput.value = settings.primeLimit;
+            if (settings.primeExponent) primeExponentInput.value = settings.primeExponent;
+            if (settings.jiLimit) jiLimitInput.value = settings.jiLimit;
+
+            // Load EDO Generator settings
+            if (settings.edoList) edoListInput.value = settings.edoList;
+            if (settings.edoAllIntervals !== undefined) edoAllIntervals.checked = settings.edoAllIntervals;
+            if (settings.edoUseApproximations !== undefined) edoUseApproximations.checked = settings.edoUseApproximations;
+            if (settings.edoApproximations) edoApproximations.value = settings.edoApproximations;
+
+            // Load filter settings
+            if (settings.complexityLimit) complexityLimitInput.value = settings.complexityLimit;
+            if (settings.centMin) centMinInput.value = settings.centMin;
+            if (settings.centMax) centMaxInput.value = settings.centMax;
+
+            // Load audio settings
+            if (settings.soundEnabled !== undefined) soundEnabledInput.checked = settings.soundEnabled;
+            if (settings.playIntervals !== undefined) playIntervalsInput.checked = settings.playIntervals;
+
+            // Load game settings
+            if (settings.rounds) roundsInput.value = settings.rounds;
+            if (settings.hideInterval !== undefined) hideIntervalInput.checked = settings.hideInterval;
+
+            console.log('Loaded all settings from URL');
+            return;
+        } catch (e) {
+            console.error('Failed to decode settings from URL:', e);
+        }
+    }
+
+    // Fallback to old format (intervals only)
+    const intervalsEncoded = urlParams.get('intervals');
+    if (intervalsEncoded) {
+        try {
+            const decoded = atob(intervalsEncoded);
             customIntervalsInput.value = decoded;
-            console.log('Loaded intervals from URL');
+            console.log('Loaded intervals from URL (legacy format)');
         } catch (e) {
             console.error('Failed to decode intervals from URL:', e);
         }
