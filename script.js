@@ -518,8 +518,10 @@ function buildJIIntervals() {
 
 function buildCustomJIIntervals() {
     const customText = customIntervalsInput.value.trim();
+    console.log('buildCustomJIIntervals called, customText:', customText);
     if (!customText) {
         // Don't alert here - let the main validation handle it
+        console.log('No custom intervals text found');
         return;
     }
 
