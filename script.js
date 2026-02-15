@@ -50,6 +50,59 @@ const enableEdo = document.getElementById('enable-edo');
 const edoListInput = document.getElementById('edo-list');
 const edoSettings = document.getElementById('edo-settings');
 const edoAllowNegativeInput = document.getElementById('edo-allow-negative');
+const soundEnabledInput = document.getElementById('sound-enabled');
+
+// Audio context and sound settings
+let audioContext = null;
+let soundEnabled = true;
+
+// Initialize audio context on first user interaction
+function initAudio() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+}
+
+// Play sound based on accuracy
+function playSound(accuracy) {
+    if (!soundEnabled || !audioContext) return;
+
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    const now = audioContext.currentTime;
+
+    if (accuracy === 'excellent') {
+        // Perfect - major chord arpeggio (C-E-G)
+        oscillator.frequency.setValueAtTime(523.25, now); // C5
+        oscillator.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        oscillator.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        gainNode.gain.setValueAtTime(0.3, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        oscillator.start(now);
+        oscillator.stop(now + 0.4);
+    } else if (accuracy === 'good') {
+        // Good - pleasant two-note sound
+        oscillator.frequency.setValueAtTime(440, now); // A4
+        oscillator.frequency.setValueAtTime(554.37, now + 0.15); // C#5
+        gainNode.gain.setValueAtTime(0.25, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        oscillator.start(now);
+        oscillator.stop(now + 0.3);
+    } else {
+        // Wrong - dissonant low sound
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(200, now);
+        oscillator.frequency.linearRampToValueAtTime(150, now + 0.2);
+        gainNode.gain.setValueAtTime(0.2, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        oscillator.start(now);
+        oscillator.stop(now + 0.2);
+    }
+}
 
 // Event listeners for settings
 enableJi.addEventListener('change', () => {
@@ -140,12 +193,16 @@ skipBtn.addEventListener('click', () => {
 endBtn.addEventListener('click', endGame);
 
 function startGame() {
+    // Initialize audio on first interaction
+    initAudio();
+
     // Read settings
     jiEnabled = enableJi.checked;
     jiLimit = parseInt(jiLimitInput.value) || 20;
     jiAllowNegative = allowNegative.checked;
     edoEnabled = enableEdo.checked;
     edoAllowNegative = edoAllowNegativeInput.checked;
+    soundEnabled = soundEnabledInput.checked;
 
     if (edoEnabled) {
         const edoInput = edoListInput.value.trim();
@@ -368,22 +425,26 @@ function submitAnswer() {
     // Update continuum markers
     updateContinuumMarkers(currentAnswer, userAnswer);
 
-    // Show feedback
+    // Show feedback and play sound
     feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
 
     if (error < 1) {
         feedback.className = 'feedback correct';
         feedback.textContent = `Excellent! Off by only ${error.toFixed(2)}¢`;
+        playSound('excellent');
     } else if (error < 5) {
         feedback.className = 'feedback correct';
         feedback.textContent = `Great! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        playSound('excellent');
     } else if (error < 20) {
         feedback.className = 'feedback incorrect';
         feedback.style.background = '#fff3cd';
         feedback.style.color = '#856404';
         feedback.style.border = '2px solid #ffeaa7';
+        playSound('good');
     } else {
         feedback.className = 'feedback incorrect';
+        playSound('wrong');
     }
 
     // Wait for user to press Enter/Submit for next question
