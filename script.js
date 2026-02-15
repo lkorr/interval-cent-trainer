@@ -1263,6 +1263,7 @@ function endGame() {
 
     // Add "Retry Missed Intervals" button if there are any
     if (missedIntervals.length > 0) {
+        submitBtn.style.display = '';
         submitBtn.textContent = 'Retry Missed Intervals';
         submitBtn.onclick = () => {
             retryMissedIntervals();
