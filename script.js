@@ -601,6 +601,7 @@ function startGame() {
     soundEnabled = soundEnabledInput.checked;
     playIntervals = playIntervalsInput.checked;
     hideInterval = hideIntervalInput.checked;
+    console.log('hideInterval setting:', hideInterval);
     numRounds = parseInt(roundsInput.value) || 1;
 
     const edoInput = edoListInput.value.trim();
@@ -795,9 +796,12 @@ function nextQuestion() {
     }
 
     // Display interval (or hide it if audio-only mode)
+    console.log('nextQuestion: hideInterval =', hideInterval);
     if (hideInterval) {
+        console.log('Hiding interval');
         intervalValue.innerHTML = '<span class="hidden-interval">?</span>';
     } else {
+        console.log('Showing interval');
         if (currentInterval.type === 'JI') {
             // Display JI intervals as vertical fractions
             intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
