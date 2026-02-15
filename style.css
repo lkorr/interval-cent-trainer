@@ -16,7 +16,7 @@ body {
 
 .container {
     width: 100%;
-    max-width: 700px;
+    max-width: 1400px;
 }
 
 h1 {
@@ -241,8 +241,9 @@ textarea:focus {
 
 .continuum {
     position: relative;
-    height: 40px;
+    height: 80px;
     margin: 10px 0;
+    cursor: pointer;
 }
 
 .continuum-track {
@@ -250,26 +251,27 @@ textarea:focus {
     top: 50%;
     left: 0;
     right: 0;
-    height: 8px;
+    height: 16px;
     background: linear-gradient(to right, #e0e0e0, #c0c0c0);
-    border-radius: 4px;
+    border-radius: 8px;
     transform: translateY(-50%);
-    cursor: pointer;
+    pointer-events: none;
     transition: height 0.2s;
 }
 
-.continuum-track:hover {
-    height: 12px;
+.continuum:hover .continuum-track {
+    height: 20px;
 }
 
 .edo-notch {
     position: absolute;
     top: 50%;
-    width: 2px;
-    height: 20px;
+    width: 3px;
+    height: 30px;
     background: #888;
     transform: translate(-50%, -50%);
     z-index: 1;
+    pointer-events: none;
 }
 
 .continuum-marker {

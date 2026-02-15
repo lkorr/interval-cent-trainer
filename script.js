@@ -36,6 +36,7 @@ const timerEl = document.getElementById('timer');
 const correctMarker = document.getElementById('correct-marker');
 const userMarker = document.getElementById('user-marker');
 const continuumTrack = document.querySelector('.continuum-track');
+const continuum = document.querySelector('.continuum');
 
 // Settings controls
 const enableJi = document.getElementById('enable-ji');
@@ -129,10 +130,10 @@ enableEdo.addEventListener('change', () => {
 startBtn.addEventListener('click', startGame);
 
 // Click on continuum to enter value
-continuumTrack.addEventListener('click', (e) => {
+continuum.addEventListener('click', (e) => {
     if (!gameActive || waitingForNext) return;
 
-    const rect = continuumTrack.getBoundingClientRect();
+    const rect = continuum.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const percent = x / rect.width;
     const cents = Math.round(percent * 1200 * 100) / 100; // Round to 2 decimals
