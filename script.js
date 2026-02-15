@@ -225,6 +225,12 @@ if (filterRangeBtn) {
     filterRangeBtn.addEventListener('click', filterByCentRange);
 }
 
+// Share intervals button
+const shareIntervalsBtn = document.getElementById('share-intervals-btn');
+if (shareIntervalsBtn) {
+    shareIntervalsBtn.addEventListener('click', shareIntervals);
+}
+
 function filterComplexIntervals() {
     const customText = customIntervalsInput.value.trim();
     if (!customText) return;
@@ -305,6 +311,54 @@ function filterByCentRange() {
 
     customIntervalsInput.value = filtered.join('\n');
 }
+
+function shareIntervals() {
+    const customText = customIntervalsInput.value.trim();
+    if (!customText) {
+        alert('No intervals to share. Add some intervals first.');
+        return;
+    }
+
+    // Encode intervals as base64 to keep URL clean
+    const encoded = btoa(customText);
+
+    // Create URL with intervals parameter
+    const url = new URL(window.location.href);
+    url.searchParams.set('intervals', encoded);
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(url.toString()).then(() => {
+        alert('URL copied to clipboard! Share this link to load these intervals.');
+    }).catch(err => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = url.toString();
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('URL copied to clipboard! Share this link to load these intervals.');
+    });
+}
+
+// Load intervals from URL on page load
+function loadIntervalsFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const encoded = urlParams.get('intervals');
+
+    if (encoded) {
+        try {
+            const decoded = atob(encoded);
+            customIntervalsInput.value = decoded;
+            console.log('Loaded intervals from URL');
+        } catch (e) {
+            console.error('Failed to decode intervals from URL:', e);
+        }
+    }
+}
+
+// Load intervals when page loads
+loadIntervalsFromURL();
 
 // Make EDO checkboxes mutually exclusive
 edoAllIntervals.addEventListener('change', () => {
