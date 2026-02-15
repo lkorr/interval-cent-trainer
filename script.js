@@ -47,6 +47,11 @@ const jiModeRadios = document.querySelectorAll('input[name="ji-mode"]');
 const jiGeneratedSettings = document.getElementById('ji-generated-settings');
 const jiCustomSettings = document.getElementById('ji-custom-settings');
 const customIntervalsInput = document.getElementById('custom-intervals');
+const primeLimitInput = document.getElementById('prime-limit');
+const primeExponentInput = document.getElementById('prime-exponent');
+const primeNumeratorOnlyInput = document.getElementById('prime-numerator-only');
+const primeMixedInput = document.getElementById('prime-mixed');
+const generatePrimesBtn = document.getElementById('generate-primes-btn');
 const enableEdo = document.getElementById('enable-edo');
 const edoListInput = document.getElementById('edo-list');
 const edoSettings = document.getElementById('edo-settings');
@@ -155,6 +160,130 @@ jiModeRadios.forEach(radio => {
 enableEdo.addEventListener('change', () => {
     edoSettings.style.display = enableEdo.checked ? 'block' : 'none';
 });
+
+// Generate prime intervals
+generatePrimesBtn.addEventListener('click', generatePrimeIntervals);
+
+function generatePrimeIntervals() {
+    const primeLimit = parseInt(primeLimitInput.value) || 7;
+    const maxExponent = parseInt(primeExponentInput.value) || 1;
+    const numeratorOnly = primeNumeratorOnlyInput.checked;
+    const mixed = primeMixedInput.checked;
+
+    // Get all primes up to limit
+    const primes = getPrimesUpTo(primeLimit).filter(p => p > 2); // Exclude 2
+
+    const intervals = new Set();
+
+    if (numeratorOnly) {
+        // Generate primes/2^x (primes only in numerator)
+        for (const prime of primes) {
+            for (let exp = 1; exp <= maxExponent; exp++) {
+                const numerator = Math.pow(prime, exp);
+                // Find appropriate power of 2 to keep within octave
+                for (let pow2 = 0; pow2 <= 10; pow2++) {
+                    const denominator = Math.pow(2, pow2);
+                    const ratio = numerator / denominator;
+                    if (ratio >= 1 && ratio < 2) {
+                        intervals.add(`${numerator}/${denominator}`);
+                    }
+                }
+            }
+        }
+    }
+
+    if (mixed) {
+        // Generate combinations with primes in both numerator and denominator
+        generatePrimeCombinations(primes, maxExponent, intervals);
+    }
+
+    // Convert set to sorted array and update textarea
+    const intervalArray = Array.from(intervals).sort((a, b) => {
+        const [an, ad] = a.split('/').map(Number);
+        const [bn, bd] = b.split('/').map(Number);
+        return (an / ad) - (bn / bd);
+    });
+
+    customIntervalsInput.value = intervalArray.join('\n');
+}
+
+function getPrimesUpTo(limit) {
+    const primes = [];
+    for (let n = 2; n <= limit; n++) {
+        let isPrime = true;
+        for (let i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i === 0) {
+                isPrime = false;
+                break;
+            }
+        }
+        if (isPrime) primes.push(n);
+    }
+    return primes;
+}
+
+function generatePrimeCombinations(primes, maxExponent, intervals) {
+    // Generate all combinations of prime exponents
+    const numPrimes = primes.length;
+
+    // Generate exponent combinations (including negative exponents for denominator)
+    function generateExponents(primeIndex, currentExponents) {
+        if (primeIndex === numPrimes) {
+            // Calculate the fraction from exponents
+            const fraction = exponentsToFraction(primes, currentExponents);
+            if (fraction) {
+                intervals.add(fraction);
+            }
+            return;
+        }
+
+        // Try each exponent value (including negative for denominator)
+        for (let exp = -maxExponent; exp <= maxExponent; exp++) {
+            currentExponents[primeIndex] = exp;
+            generateExponents(primeIndex + 1, currentExponents);
+        }
+    }
+
+    generateExponents(0, new Array(numPrimes).fill(0));
+}
+
+function exponentsToFraction(primes, exponents) {
+    let numerator = 1;
+    let denominator = 1;
+
+    for (let i = 0; i < primes.length; i++) {
+        const prime = primes[i];
+        const exp = exponents[i];
+
+        if (exp > 0) {
+            numerator *= Math.pow(prime, exp);
+        } else if (exp < 0) {
+            denominator *= Math.pow(prime, -exp);
+        }
+    }
+
+    // Normalize to within one octave (1 to 2)
+    const ratio = numerator / denominator;
+    if (ratio === 1) return null; // Skip unison
+
+    // Adjust by powers of 2 to get within octave
+    let adjustedNum = numerator;
+    let adjustedDen = denominator;
+
+    while (adjustedNum / adjustedDen >= 2) {
+        adjustedDen *= 2;
+    }
+    while (adjustedNum / adjustedDen < 1) {
+        adjustedNum *= 2;
+    }
+
+    // Reduce fraction
+    const g = gcd(adjustedNum, adjustedDen);
+    adjustedNum /= g;
+    adjustedDen /= g;
+
+    return `${adjustedNum}/${adjustedDen}`;
+}
 
 // Start game
 startBtn.addEventListener('click', startGame);

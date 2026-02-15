@@ -41,8 +41,28 @@
                         Use custom interval bank
                     </label>
                     <div id="ji-custom-settings" class="sub-subsettings" style="display: none;">
+                        <div class="prime-generator">
+                            <h4>Prime Interval Generator</h4>
+                            <label>
+                                Prime limit (highest prime):
+                                <input type="number" id="prime-limit" min="3" max="97" value="7" step="2">
+                            </label>
+                            <label>
+                                Max exponent:
+                                <input type="number" id="prime-exponent" min="1" max="5" value="1">
+                            </label>
+                            <label>
+                                <input type="checkbox" id="prime-numerator-only">
+                                Primes/2^x (primes only in numerator)
+                            </label>
+                            <label>
+                                <input type="checkbox" id="prime-mixed" checked>
+                                Mixed (primes in numerator and denominator)
+                            </label>
+                            <button id="generate-primes-btn" class="btn-secondary" type="button">Generate Prime Intervals</button>
+                        </div>
                         <label>
-                            Paste intervals (one per line, e.g., "3/2", "5/4", "7/6"):
+                            Custom intervals (one per line, e.g., "3/2", "5/4", "7/6"):
                             <textarea id="custom-intervals" rows="6" placeholder="3/2&#10;5/4&#10;7/6&#10;9/8&#10;11/8&#10;15/8"></textarea>
                         </label>
                     </div>
