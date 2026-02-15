@@ -473,14 +473,32 @@ function submitAnswer() {
         feedback.style.color = '';
         feedback.style.border = '';
         playSound('excellent');
-    } else if (error < 20) {
+    } else if (error < 10) {
+        // Light green/yellow (lime-ish)
+        feedback.className = 'feedback good';
+        feedback.textContent = `Good! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.style.background = '#e7f4d3';
+        feedback.style.color = '#5a7a2c';
+        feedback.style.border = '2px solid #c4db9b';
+        playSound('excellent');
+    } else if (error < 25) {
+        // Yellow
         feedback.className = 'feedback medium';
         feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
         feedback.style.background = '#fff3cd';
         feedback.style.color = '#856404';
         feedback.style.border = '2px solid #ffeaa7';
         playSound('good');
+    } else if (error < 40) {
+        // Orange
+        feedback.className = 'feedback poor';
+        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.style.background = '#ffe5cc';
+        feedback.style.color = '#cc5500';
+        feedback.style.border = '2px solid #ffb366';
+        playSound('good');
     } else {
+        // Red
         feedback.className = 'feedback incorrect';
         feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
         feedback.style.background = '';
