@@ -419,11 +419,13 @@ skipBtn.addEventListener('click', () => {
 endBtn.addEventListener('click', endGame);
 
 function startGame() {
+    console.log('Start game clicked');
     // Initialize audio on first interaction
     initAudio();
 
     // Read settings
     jiEnabled = enableJi.checked;
+    console.log('jiEnabled:', jiEnabled);
     jiLimit = parseInt(jiLimitInput.value) || 20;
     jiAllowNegative = allowNegative.checked;
     edoEnabled = enableEdo.checked;
@@ -461,6 +463,9 @@ function startGame() {
     if (edoEnabled) {
         buildEDOIntervals();
     }
+
+    console.log('Interval pool length:', intervalPool.length);
+    console.log('First few intervals:', intervalPool.slice(0, 5));
 
     // Check if we have any intervals
     if (intervalPool.length === 0) {
