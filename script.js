@@ -462,19 +462,30 @@ function submitAnswer() {
     if (error < 1) {
         feedback.className = 'feedback correct';
         feedback.textContent = `Excellent! Off by only ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.style.background = '';
+        feedback.style.color = '';
+        feedback.style.border = '';
         playSound('excellent');
     } else if (error < 5) {
         feedback.className = 'feedback correct';
         feedback.textContent = `Great! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.style.background = '';
+        feedback.style.color = '';
+        feedback.style.border = '';
         playSound('excellent');
     } else if (error < 20) {
-        feedback.className = 'feedback incorrect';
+        feedback.className = 'feedback medium';
+        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
         feedback.style.background = '#fff3cd';
         feedback.style.color = '#856404';
         feedback.style.border = '2px solid #ffeaa7';
         playSound('good');
     } else {
         feedback.className = 'feedback incorrect';
+        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.style.background = '';
+        feedback.style.color = '';
+        feedback.style.border = '';
         playSound('wrong');
     }
 
