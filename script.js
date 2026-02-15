@@ -68,40 +68,57 @@ function initAudio() {
 function playSound(accuracy) {
     if (!soundEnabled || !audioContext) return;
 
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
     const now = audioContext.currentTime;
 
     if (accuracy === 'excellent') {
         // Perfect - major chord arpeggio (C-E-G)
-        oscillator.frequency.setValueAtTime(523.25, now); // C5
-        oscillator.frequency.setValueAtTime(659.25, now + 0.1); // E5
-        oscillator.frequency.setValueAtTime(783.99, now + 0.2); // G5
-        gainNode.gain.setValueAtTime(0.3, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        oscillator.start(now);
-        oscillator.stop(now + 0.4);
+        const notes = [
+            { freq: 523.25, start: 0, duration: 0.15 },    // C5
+            { freq: 659.25, start: 0.08, duration: 0.15 },  // E5
+            { freq: 783.99, start: 0.16, duration: 0.2 }    // G5
+        ];
+
+        notes.forEach(note => {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+
+            osc.frequency.value = note.freq;
+            gain.gain.setValueAtTime(0.2, now + note.start);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + note.start + note.duration);
+
+            osc.start(now + note.start);
+            osc.stop(now + note.start + note.duration);
+        });
     } else if (accuracy === 'good') {
-        // Good - pleasant two-note sound
-        oscillator.frequency.setValueAtTime(440, now); // A4
-        oscillator.frequency.setValueAtTime(554.37, now + 0.15); // C#5
-        gainNode.gain.setValueAtTime(0.25, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-        oscillator.start(now);
-        oscillator.stop(now + 0.3);
+        // Good - single pleasant tone
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.frequency.value = 440; // A4
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
     } else {
-        // Wrong - dissonant low sound
-        oscillator.type = 'sawtooth';
-        oscillator.frequency.setValueAtTime(200, now);
-        oscillator.frequency.linearRampToValueAtTime(150, now + 0.2);
-        gainNode.gain.setValueAtTime(0.2, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-        oscillator.start(now);
-        oscillator.stop(now + 0.2);
+        // Wrong - dissonant descending sound
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+        osc.start(now);
+        osc.stop(now + 0.3);
     }
 }
 
@@ -431,7 +448,7 @@ function submitAnswer() {
 
     if (error < 1) {
         feedback.className = 'feedback correct';
-        feedback.textContent = `Excellent! Off by only ${error.toFixed(2)}¢`;
+        feedback.textContent = `Excellent! Off by only ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
         playSound('excellent');
     } else if (error < 5) {
         feedback.className = 'feedback correct';
