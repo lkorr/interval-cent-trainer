@@ -48,6 +48,8 @@ const customIntervalsInput = document.getElementById('custom-intervals');
 const primeLimitInput = document.getElementById('prime-limit');
 const primeExponentInput = document.getElementById('prime-exponent');
 const jiLimitInput = document.getElementById('ji-limit');
+const removeComplexInput = document.getElementById('remove-complex');
+const complexityLimitInput = document.getElementById('complexity-limit');
 const generateIntervalsBtn = document.getElementById('generate-intervals-btn');
 const enableEdo = document.getElementById('enable-edo');
 const edoListInput = document.getElementById('edo-list');
@@ -241,8 +243,21 @@ function generateIntervals() {
         }
     }
 
-    // Convert set to sorted array and update textarea
-    const intervalArray = Array.from(intervals).sort((a, b) => {
+    // Convert set to array and filter by complexity if enabled
+    let intervalArray = Array.from(intervals);
+
+    const removeComplex = removeComplexInput.checked;
+    const complexityLimit = parseInt(complexityLimitInput.value) || 50000;
+
+    if (removeComplex) {
+        intervalArray = intervalArray.filter(interval => {
+            const [num, den] = interval.split('/').map(Number);
+            return (num * den) <= complexityLimit;
+        });
+    }
+
+    // Sort by ratio
+    intervalArray.sort((a, b) => {
         const [an, ad] = a.split('/').map(Number);
         const [bn, bd] = b.split('/').map(Number);
         return (an / ad) - (bn / bd);

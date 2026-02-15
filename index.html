@@ -53,13 +53,20 @@
                             <div class="prime-settings">
                                 <label>
                                     Prime limit (highest prime):
-                                    <input type="number" id="prime-limit" min="3" max="97" value="7" step="2">
+                                    <input type="number" id="prime-limit" min="3" max="97" value="13" step="2">
                                 </label>
                                 <label>
                                     Max exponent (for n-limit JI):
                                     <input type="number" id="prime-exponent" min="1" max="5" value="1">
                                 </label>
                             </div>
+
+                            <label class="inline-number">
+                                <input type="checkbox" id="remove-complex">
+                                Remove commas/complex intervals (numerator × denominator &gt;
+                                <input type="number" id="complexity-limit" min="1" max="1000000" value="50000" class="small-number-input">
+                                )
+                            </label>
 
                             <button id="generate-intervals-btn" class="btn-secondary" type="button">Generate Intervals</button>
                         </div>
