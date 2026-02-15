@@ -6,6 +6,7 @@ let questionCount = 0;
 let totalError = 0;
 let intervalPool = [];
 let remainingIntervals = [];
+let missedIntervals = [];
 let totalQuestions = 0;
 let startTime = null;
 let timerInterval = null;
@@ -601,7 +602,6 @@ function startGame() {
     soundEnabled = soundEnabledInput.checked;
     playIntervals = playIntervalsInput.checked;
     hideInterval = hideIntervalInput.checked;
-    console.log('hideInterval setting:', hideInterval);
     numRounds = parseInt(roundsInput.value) || 1;
 
     const edoInput = edoListInput.value.trim();
@@ -612,6 +612,7 @@ function startGame() {
     questionCount = 0;
     totalError = 0;
     intervalPool = [];
+    missedIntervals = [];
 
     // Build interval pool from custom intervals textarea
     // This now handles both JI (x/y) and EDO (x\n) notation
@@ -796,12 +797,9 @@ function nextQuestion() {
     }
 
     // Display interval (or hide it if audio-only mode)
-    console.log('nextQuestion: hideInterval =', hideInterval);
     if (hideInterval) {
-        console.log('Hiding interval');
         intervalValue.innerHTML = '<span class="hidden-interval">?</span>';
     } else {
-        console.log('Showing interval');
         if (currentInterval.type === 'JI') {
             // Display JI intervals as vertical fractions
             intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
@@ -874,6 +872,7 @@ function submitAnswer() {
         feedback.style.color = '';
         feedback.style.border = '';
         playSound('excellent');
+        // Don't add to missed intervals (excellent)
     } else if (error < 5) {
         feedback.className = 'feedback correct';
         feedback.textContent = `Great! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
@@ -881,6 +880,7 @@ function submitAnswer() {
         feedback.style.color = '';
         feedback.style.border = '';
         playSound('excellent');
+        // Don't add to missed intervals (still excellent)
     } else if (error < 10) {
         // Light green/yellow (lime-ish)
         feedback.className = 'feedback good';
@@ -889,6 +889,8 @@ function submitAnswer() {
         feedback.style.color = '#5a7a2c';
         feedback.style.border = '2px solid #c4db9b';
         playSound('excellent');
+        // Add to missed intervals (not excellent)
+        missedIntervals.push(currentInterval);
     } else if (error < 25) {
         // Yellow
         feedback.className = 'feedback medium';
@@ -897,6 +899,8 @@ function submitAnswer() {
         feedback.style.color = '#856404';
         feedback.style.border = '2px solid #ffeaa7';
         playSound('good');
+        // Add to missed intervals
+        missedIntervals.push(currentInterval);
     } else if (error < 40) {
         // Orange
         feedback.className = 'feedback poor';
@@ -905,6 +909,8 @@ function submitAnswer() {
         feedback.style.color = '#cc5500';
         feedback.style.border = '2px solid #ffb366';
         playSound('good');
+        // Add to missed intervals
+        missedIntervals.push(currentInterval);
     } else {
         // Red
         feedback.className = 'feedback incorrect';
@@ -913,6 +919,8 @@ function submitAnswer() {
         feedback.style.color = '';
         feedback.style.border = '';
         playSound('wrong');
+        // Add to missed intervals
+        missedIntervals.push(currentInterval);
     }
 
     // Wait for user to press Enter/Submit for next question
@@ -963,12 +971,88 @@ function endGame() {
     message += `Questions answered: ${questionCount}\n`;
     message += `Total error: ${totalError.toFixed(2)}¢\n`;
     if (questionCount > 0) {
-        message += `Average error: ${(totalError / questionCount).toFixed(2)}¢`;
+        message += `Average error: ${(totalError / questionCount).toFixed(2)}¢\n`;
+    }
+    if (missedIntervals.length > 0) {
+        message += `\nMissed intervals: ${missedIntervals.length}`;
     }
 
-    alert(message);
+    // Show summary in game panel instead of alert
+    feedback.innerHTML = `
+        <div style="text-align: left;">
+            <strong>Game Over!</strong><br><br>
+            Time: ${seconds}s<br>
+            Questions answered: ${questionCount}<br>
+            Total error: ${totalError.toFixed(2)}¢<br>
+            ${questionCount > 0 ? `Average error: ${(totalError / questionCount).toFixed(2)}¢<br>` : ''}
+            ${missedIntervals.length > 0 ? `<br>Missed intervals (>5¢ error): ${missedIntervals.length}` : ''}
+        </div>
+    `;
+    feedback.className = 'feedback';
+    feedback.style.background = '#f8f9fa';
+    feedback.style.color = '#333';
+    feedback.style.border = '2px solid #ddd';
+    feedback.style.padding = '20px';
 
-    // Return to settings
-    gamePanel.style.display = 'none';
-    settingsPanel.style.display = 'block';
+    // Hide interval display and input
+    document.querySelector('.interval-display').style.display = 'none';
+    document.querySelector('.input-section').style.display = 'none';
+    document.querySelector('.continuum-container').style.display = 'none';
+    skipBtn.style.display = 'none';
+
+    // Change end button to "Return to Settings"
+    endBtn.textContent = 'Return to Settings';
+    endBtn.onclick = () => {
+        // Reset display
+        document.querySelector('.interval-display').style.display = '';
+        document.querySelector('.input-section').style.display = '';
+        document.querySelector('.continuum-container').style.display = '';
+        skipBtn.style.display = '';
+        endBtn.textContent = 'End Game';
+        endBtn.onclick = endGame;
+
+        // Return to settings
+        gamePanel.style.display = 'none';
+        settingsPanel.style.display = 'block';
+    };
+
+    // Add "Retry Missed Intervals" button if there are any
+    if (missedIntervals.length > 0) {
+        submitBtn.textContent = 'Retry Missed Intervals';
+        submitBtn.onclick = () => {
+            retryMissedIntervals();
+        };
+    } else {
+        submitBtn.style.display = 'none';
+    }
+}
+
+function retryMissedIntervals() {
+    // Reset display elements
+    document.querySelector('.interval-display').style.display = '';
+    document.querySelector('.input-section').style.display = '';
+    document.querySelector('.continuum-container').style.display = '';
+    skipBtn.style.display = '';
+    submitBtn.style.display = '';
+    endBtn.textContent = 'End Game';
+    endBtn.onclick = endGame;
+    submitBtn.onclick = null; // Will be handled by handleSubmitOrNext
+
+    // Reset game state
+    gameActive = true;
+    questionCount = 0;
+    totalError = 0;
+
+    // Use only the missed intervals
+    remainingIntervals = [...missedIntervals];
+    shuffleArray(remainingIntervals);
+    missedIntervals = []; // Clear missed intervals for new attempt
+    totalQuestions = remainingIntervals.length;
+
+    // Start timer
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 100);
+
+    // Start first question
+    nextQuestion();
 }
