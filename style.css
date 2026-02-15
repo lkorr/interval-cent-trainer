@@ -96,6 +96,33 @@ input[type="text"]:focus {
     margin-top: 8px;
 }
 
+.generator-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.generator-box {
+    flex: 1;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.generator-box h4 {
+    margin-bottom: 12px;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.custom-intervals-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Legacy support */
 .prime-generator {
     background: #f8f9fa;
     padding: 15px;
@@ -388,5 +415,9 @@ textarea:focus {
 
     .input-section .btn-primary {
         width: 100%;
+    }
+
+    .generator-container {
+        flex-direction: column;
     }
 }

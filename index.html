@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Interval Cent Trainer</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
     <div class="container">
@@ -18,83 +18,98 @@
             <h2>Game Settings</h2>
 
             <div class="settings-section">
-                <h3>Just Intonation</h3>
-                <label>
-                    <input type="checkbox" id="enable-ji" checked>
-                    Enable JI Intervals
-                </label>
-                <div id="ji-settings" class="subsettings">
-                    <label>
-                        <input type="radio" name="ji-mode" value="custom" checked>
-                        Use custom interval bank
-                    </label>
-                    <div id="ji-custom-settings" class="sub-subsettings">
-                        <div class="prime-generator">
-                            <h4>Interval Generator</h4>
+                <h3>Interval Generators</h3>
 
+                <div class="generator-container">
+                    <!-- Just Intonation Generator (Left) -->
+                    <div class="generator-box">
+                        <h4>Just Intonation</h4>
+                        <label>
+                            <input type="checkbox" id="enable-ji" checked>
+                            Enable JI Intervals
+                        </label>
+
+                        <div id="ji-settings">
                             <label>
                                 <input type="radio" name="generator-mode" value="primes-2x" checked>
-                                Primes/2^x (primes only in numerator)
+                                Primes/2^x
                             </label>
 
                             <label>
                                 <input type="radio" name="generator-mode" value="prime-ratios">
-                                Prime ratios (one prime over another prime)
+                                Prime ratios
                             </label>
 
                             <label>
                                 <input type="radio" name="generator-mode" value="products">
-                                Products (composite numbers, n-limit JI)
+                                Products (n-limit)
                             </label>
 
                             <label class="inline-number">
                                 <input type="radio" name="generator-mode" value="simple-limit">
-                                All fractions with limit (max numerator/denominator):
+                                All fractions, limit:
                                 <input type="number" id="ji-limit" min="2" max="100" value="20" class="small-number-input">
                             </label>
 
-                            <div class="prime-settings">
-                                <label>
-                                    Prime limit (highest prime):
-                                    <input type="number" id="prime-limit" min="3" max="97" value="13" step="2">
-                                </label>
-                                <label>
-                                    Max exponent (for n-limit JI):
-                                    <input type="number" id="prime-exponent" min="1" max="5" value="1">
-                                </label>
-                            </div>
+                            <label>
+                                Prime limit:
+                                <input type="number" id="prime-limit" min="3" max="97" value="13" step="2">
+                            </label>
+                            <label>
+                                Max exponent:
+                                <input type="number" id="prime-exponent" min="1" max="5" value="1">
+                            </label>
 
                             <label class="inline-number">
                                 <input type="checkbox" id="remove-complex">
-                                Remove commas/complex intervals (numerator × denominator &gt;
+                                Remove complex (n×d &gt;
                                 <input type="number" id="complexity-limit" min="1" max="1000000" value="10000" class="medium-number-input">
                                 )
                             </label>
 
-                            <button id="generate-intervals-btn" class="btn-secondary" type="button">Generate Intervals</button>
+                            <button id="generate-intervals-btn" class="btn-secondary" type="button">Generate JI</button>
                         </div>
+                    </div>
+
+                    <!-- EDO Generator (Right) -->
+                    <div class="generator-box">
+                        <h4>Equal Divisions of the Octave (EDO)</h4>
                         <label>
-                            Custom intervals (one per line, e.g., "3/2", "5/4", "7/6"):
-                            <textarea id="custom-intervals" rows="6" placeholder="3/2&#10;5/4&#10;7/6&#10;9/8&#10;11/8&#10;15/8"></textarea>
+                            <input type="checkbox" id="enable-edo">
+                            Enable EDO Intervals
                         </label>
+
+                        <div id="edo-settings" style="display: none;">
+                            <label>
+                                EDOs (comma-separated):
+                                <input type="text" id="edo-list" placeholder="12,17,24,31" value="12">
+                            </label>
+
+                            <label>
+                                <input type="checkbox" id="edo-all-intervals">
+                                All EDO intervals (exclude 0\n, n\n)
+                            </label>
+
+                            <label>
+                                Approximations of (comma-separated, e.g., "3/2,5/4"):
+                                <input type="text" id="edo-approximations" placeholder="3/2,5/4" value="3/2,5/4">
+                            </label>
+
+                            <label>
+                                <input type="checkbox" id="edo-use-approximations">
+                                Use approximations instead of all intervals
+                            </label>
+
+                            <button id="generate-edo-intervals-btn" class="btn-secondary" type="button">Generate EDO</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="settings-section">
-                <h3>Equal Divisions of the Octave (EDO)</h3>
-                <label>
-                    <input type="checkbox" id="enable-edo">
-                    Enable EDO Intervals
-                </label>
-                <div id="edo-settings" class="subsettings" style="display: none;">
+                <!-- Custom Intervals Box (Full Width Below) -->
+                <div class="custom-intervals-box">
                     <label>
-                        Select EDOs (comma-separated, e.g., "12,17,24"):
-                        <input type="text" id="edo-list" placeholder="12,17,24,31" value="12">
-                    </label>
-                    <label>
-                        <input type="checkbox" id="edo-allow-negative">
-                        Allow negative cents (e.g., -1\12)
+                        Custom intervals (one per line, e.g., "3/2", "5/4", "7/6", "1\12", "7\12"):
+                        <textarea id="custom-intervals" rows="6" placeholder="3/2&#10;5/4&#10;7/6&#10;9/8&#10;11/8&#10;15/8"></textarea>
                     </label>
                 </div>
             </div>
@@ -104,6 +119,10 @@
                 <label>
                     <input type="checkbox" id="sound-enabled" checked>
                     Enable sound feedback
+                </label>
+                <label>
+                    <input type="checkbox" id="play-intervals" checked>
+                    Play intervals (hear the interval when question is shown)
                 </label>
             </div>
 
@@ -191,6 +210,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>

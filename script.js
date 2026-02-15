@@ -14,10 +14,8 @@ let waitingForNext = false;
 // Settings
 let jiEnabled = true;
 let jiLimit = 20;
-let jiAllowNegative = false;
 let edoEnabled = false;
 let edoList = [];
-let edoAllowNegative = false;
 
 // DOM elements
 const settingsPanel = document.getElementById('settings-panel');
@@ -53,13 +51,18 @@ const generateIntervalsBtn = document.getElementById('generate-intervals-btn');
 const enableEdo = document.getElementById('enable-edo');
 const edoListInput = document.getElementById('edo-list');
 const edoSettings = document.getElementById('edo-settings');
-const edoAllowNegativeInput = document.getElementById('edo-allow-negative');
+const edoAllIntervals = document.getElementById('edo-all-intervals');
+const edoApproximations = document.getElementById('edo-approximations');
+const edoUseApproximations = document.getElementById('edo-use-approximations');
+const generateEdoIntervalsBtn = document.getElementById('generate-edo-intervals-btn');
 const soundEnabledInput = document.getElementById('sound-enabled');
+const playIntervalsInput = document.getElementById('play-intervals');
 const roundsInput = document.getElementById('rounds');
 
 // Audio context and sound settings
 let audioContext = null;
 let soundEnabled = true;
+let playIntervals = true;
 let numRounds = 1;
 
 // Initialize audio context on first user interaction
@@ -74,6 +77,51 @@ function initAudio() {
             console.log('Audio context resumed');
         });
     }
+}
+
+// Play interval audio
+function playIntervalAudio(cents) {
+    if (!playIntervals || !audioContext) return;
+
+    // Ensure audio context is running
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+
+    const now = audioContext.currentTime;
+    const baseFreq = 220; // A3
+    const release = 0.6; // Medium-high release
+
+    // Calculate interval frequency
+    const intervalFreq = baseFreq * Math.pow(2, cents / 1200);
+
+    // Play root note
+    const osc1 = audioContext.createOscillator();
+    const gain1 = audioContext.createGain();
+    osc1.connect(gain1);
+    gain1.connect(audioContext.destination);
+
+    osc1.type = 'sawtooth';
+    osc1.frequency.value = baseFreq;
+    gain1.gain.setValueAtTime(0.15, now);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + release);
+
+    osc1.start(now);
+    osc1.stop(now + release);
+
+    // Play interval note after 300ms
+    const osc2 = audioContext.createOscillator();
+    const gain2 = audioContext.createGain();
+    osc2.connect(gain2);
+    gain2.connect(audioContext.destination);
+
+    osc2.type = 'sawtooth';
+    osc2.frequency.value = intervalFreq;
+    gain2.gain.setValueAtTime(0.15, now + 0.3);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3 + release);
+
+    osc2.start(now + 0.3);
+    osc2.stop(now + 0.3 + release);
 }
 
 // Play sound based on accuracy
@@ -155,6 +203,13 @@ if (generateIntervalsBtn) {
     generateIntervalsBtn.addEventListener('click', generateIntervals);
 } else {
     console.error('Generate intervals button not found!');
+}
+
+// Generate EDO intervals
+if (generateEdoIntervalsBtn) {
+    generateEdoIntervalsBtn.addEventListener('click', generateEdoIntervals);
+} else {
+    console.error('Generate EDO intervals button not found!');
 }
 
 function generateIntervals() {
@@ -270,6 +325,91 @@ function generateIntervals() {
     }
 
     customIntervalsInput.value = intervalArray.join('\n');
+}
+
+function generateEdoIntervals() {
+    console.log('Generate EDO intervals button clicked');
+
+    const edoInput = edoListInput.value.trim();
+    if (!edoInput) {
+        alert('Please enter EDO values (e.g., 12,17,24)');
+        return;
+    }
+
+    const edos = edoInput.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
+    if (edos.length === 0) {
+        alert('Please enter valid EDO values');
+        return;
+    }
+
+    const intervals = [];
+    const useApproximations = edoUseApproximations.checked;
+
+    if (useApproximations) {
+        // Generate approximations of specific intervals
+        const approxInput = edoApproximations.value.trim();
+        if (!approxInput) {
+            alert('Please enter intervals to approximate (e.g., 3/2,5/4)');
+            return;
+        }
+
+        const ratios = approxInput.split(',').map(s => s.trim());
+
+        for (const ratio of ratios) {
+            const match = ratio.match(/^(\d+)\/(\d+)$/);
+            if (!match) {
+                console.warn(`Skipping invalid ratio: ${ratio}`);
+                continue;
+            }
+
+            const num = parseInt(match[1]);
+            const den = parseInt(match[2]);
+            const targetCents = 1200 * Math.log2(num / den);
+
+            // Find best approximation in each EDO
+            for (const edo of edos) {
+                let bestStep = 0;
+                let bestError = Infinity;
+
+                for (let step = 0; step <= edo; step++) {
+                    const stepCents = (step / edo) * 1200;
+                    const error = Math.abs(stepCents - targetCents);
+
+                    if (error < bestError) {
+                        bestError = error;
+                        bestStep = step;
+                    }
+                }
+
+                // Skip 0\n and n\n unless it's genuinely the best approximation
+                if (bestStep !== 0 && bestStep !== edo) {
+                    intervals.push(`${bestStep}\\${edo}`);
+                }
+            }
+        }
+    } else {
+        // Generate all EDO intervals (exclude 0\n and n\n)
+        for (const edo of edos) {
+            for (let step = 1; step < edo; step++) {
+                intervals.push(`${step}\\${edo}`);
+            }
+        }
+    }
+
+    if (intervals.length === 0) {
+        alert('No intervals generated. Try adjusting your settings.');
+        return;
+    }
+
+    // Get existing intervals from the textarea
+    const existingText = customIntervalsInput.value.trim();
+    const existingIntervals = existingText ? existingText.split('\n') : [];
+
+    // Append new intervals
+    const allIntervals = [...existingIntervals, ...intervals];
+    customIntervalsInput.value = allIntervals.join('\n');
+
+    console.log(`Generated ${intervals.length} EDO intervals`);
 }
 
 function getPrimesUpTo(limit) {
@@ -426,10 +566,9 @@ function startGame() {
     jiEnabled = enableJi.checked;
     console.log('jiEnabled:', jiEnabled);
     jiLimit = parseInt(jiLimitInput.value) || 20;
-    jiAllowNegative = false; // JI doesn't have allow negative option anymore
     edoEnabled = enableEdo.checked;
-    edoAllowNegative = edoAllowNegativeInput.checked;
     soundEnabled = soundEnabledInput.checked;
+    playIntervals = playIntervalsInput.checked;
     numRounds = parseInt(roundsInput.value) || 1;
 
     if (edoEnabled) {
@@ -437,16 +576,8 @@ function startGame() {
         edoList = edoInput.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
     }
 
-    // Validate settings
-    if (!jiEnabled && !edoEnabled) {
-        alert('Please enable at least one game mode (JI or EDO)');
-        return;
-    }
-
-    if (edoEnabled && edoList.length === 0) {
-        alert('Please enter valid EDO values (e.g., 12,17,24)');
-        return;
-    }
+    // Validate settings - just check if custom intervals textarea has content
+    // (Both JI and EDO generators populate this textarea)
 
     // Initialize game state
     gameActive = true;
@@ -454,14 +585,9 @@ function startGame() {
     totalError = 0;
     intervalPool = [];
 
-    // Build interval pool
-    if (jiEnabled) {
-        buildCustomJIIntervals();
-    }
-
-    if (edoEnabled) {
-        buildEDOIntervals();
-    }
+    // Build interval pool from custom intervals textarea
+    // This now handles both JI (x/y) and EDO (x\n) notation
+    buildCustomJIIntervals();
 
     console.log('Interval pool length:', intervalPool.length);
     console.log('First few intervals:', intervalPool.slice(0, 5));
@@ -506,8 +632,8 @@ function buildJIIntervals() {
             if (gcd(num, den) === 1) { // Only reduced fractions
                 const cents = 1200 * Math.log2(num / den);
 
-                // Only include if within 0-1200¢ range (or allow negative if enabled)
-                if (jiAllowNegative || (cents >= 0 && cents <= 1200)) {
+                // Only include if within 0-1200¢ range
+                if (cents >= 0 && cents <= 1200) {
                     intervalPool.push({
                         type: 'JI',
                         numerator: num,
@@ -534,27 +660,47 @@ function buildCustomJIIntervals() {
         line = line.trim();
         if (!line) continue;
 
+        // Parse EDO notation (e.g., "7\12" or "5\17")
+        const edoMatch = line.match(/^(-?\d+)\\(\d+)$/);
+        if (edoMatch) {
+            const step = parseInt(edoMatch[1]);
+            const edo = parseInt(edoMatch[2]);
+
+            if (edo === 0) {
+                console.warn(`Skipping invalid EDO interval (division by zero): ${line}`);
+                continue;
+            }
+
+            intervalPool.push({
+                type: 'EDO',
+                edo: edo,
+                step: step,
+                display: `${step}\\${edo}`
+            });
+            continue;
+        }
+
         // Parse fraction (e.g., "3/2" or "5/4")
-        const match = line.match(/^(\d+)\/(\d+)$/);
-        if (!match) {
-            console.warn(`Skipping invalid interval: ${line}`);
+        const jiMatch = line.match(/^(\d+)\/(\d+)$/);
+        if (jiMatch) {
+            const num = parseInt(jiMatch[1]);
+            const den = parseInt(jiMatch[2]);
+
+            if (den === 0) {
+                console.warn(`Skipping invalid interval (division by zero): ${line}`);
+                continue;
+            }
+
+            intervalPool.push({
+                type: 'JI',
+                numerator: num,
+                denominator: den,
+                display: `${num}/${den}`
+            });
             continue;
         }
 
-        const num = parseInt(match[1]);
-        const den = parseInt(match[2]);
-
-        if (den === 0) {
-            console.warn(`Skipping invalid interval (division by zero): ${line}`);
-            continue;
-        }
-
-        intervalPool.push({
-            type: 'JI',
-            numerator: num,
-            denominator: den,
-            display: `${num}/${den}`
-        });
+        console.warn(`Skipping invalid interval: ${line}`);
     }
 }
 
@@ -640,6 +786,9 @@ function nextQuestion() {
     if (!timerInterval) {
         timerInterval = setInterval(updateTimer, 100);
     }
+
+    // Play the interval audio
+    playIntervalAudio(currentAnswer);
 }
 
 function submitAnswer() {
