@@ -1220,7 +1220,7 @@ function endGame() {
             Questions answered: ${questionCount}<br>
             Total error: ${totalError.toFixed(2)}¢<br>
             ${questionCount > 0 ? `Average error: ${(totalError / questionCount).toFixed(2)}¢<br>` : ''}
-            ${missedIntervals.length > 0 ? `<br>Missed intervals (>5¢ error): ${missedIntervals.length}` : ''}
+            ${missedIntervals.length > 0 ? `<br>Missed intervals (>5¢ error): ${missedIntervals.length} <button id="load-missed-btn" class="btn-secondary" style="margin-left: 10px;">Load to Bank</button>` : ''}
         </div>
     `;
     feedback.className = 'feedback';
@@ -1228,6 +1228,16 @@ function endGame() {
     feedback.style.color = '#333';
     feedback.style.border = '2px solid #ddd';
     feedback.style.padding = '20px';
+
+    // Add event listener for "Load to Bank" button if it exists
+    if (missedIntervals.length > 0) {
+        setTimeout(() => {
+            const loadMissedBtn = document.getElementById('load-missed-btn');
+            if (loadMissedBtn) {
+                loadMissedBtn.addEventListener('click', loadMissedToBank);
+            }
+        }, 0);
+    }
 
     // Hide interval display and input
     document.querySelector('.interval-display').style.display = 'none';
@@ -1260,6 +1270,28 @@ function endGame() {
     } else {
         submitBtn.style.display = 'none';
     }
+}
+
+function loadMissedToBank() {
+    // Convert missed intervals to their display format
+    const missedDisplays = missedIntervals.map(interval => interval.display);
+
+    // Clear the custom intervals textarea and fill with missed intervals only
+    customIntervalsInput.value = missedDisplays.join('\n');
+
+    // Return to settings panel
+    document.querySelector('.interval-display').style.display = '';
+    document.querySelector('.input-section').style.display = '';
+    document.querySelector('.continuum-container').style.display = '';
+    skipBtn.style.display = '';
+    submitBtn.style.display = '';
+    endBtn.textContent = 'End Game';
+    endBtn.onclick = endGame;
+
+    gamePanel.style.display = 'none';
+    settingsPanel.style.display = 'block';
+
+    alert(`Loaded ${missedIntervals.length} missed intervals to the interval bank. You can now start a new game with only these intervals.`);
 }
 
 function retryMissedIntervals() {
