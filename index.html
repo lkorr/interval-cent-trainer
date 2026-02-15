@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interval Cent Trainer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Interval Cent Trainer</h1>
+
+        <!-- Settings Panel -->
+        <div id="settings-panel" class="panel">
+            <h2>Game Settings</h2>
+
+            <div class="settings-section">
+                <h3>Just Intonation</h3>
+                <label>
+                    <input type="checkbox" id="enable-ji" checked>
+                    Enable JI Intervals
+                </label>
+                <div id="ji-settings" class="subsettings">
+                    <label>
+                        <input type="radio" name="ji-mode" value="generated" checked>
+                        Generate intervals automatically
+                    </label>
+                    <div id="ji-generated-settings" class="sub-subsettings">
+                        <label>
+                            Limit (max numerator/denominator):
+                            <input type="number" id="ji-limit" min="2" max="100" value="20">
+                        </label>
+                        <label>
+                            <input type="checkbox" id="allow-negative">
+                            Allow negative cents (e.g., 1/2)
+                        </label>
+                    </div>
+
+                    <label>
+                        <input type="radio" name="ji-mode" value="custom">
+                        Use custom interval bank
+                    </label>
+                    <div id="ji-custom-settings" class="sub-subsettings" style="display: none;">
+                        <label>
+                            Paste intervals (one per line, e.g., "3/2", "5/4", "7/6"):
+                            <textarea id="custom-intervals" rows="6" placeholder="3/2&#10;5/4&#10;7/6&#10;9/8&#10;11/8&#10;15/8"></textarea>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Equal Divisions of the Octave (EDO)</h3>
+                <label>
+                    <input type="checkbox" id="enable-edo">
+                    Enable EDO Intervals
+                </label>
+                <div id="edo-settings" class="subsettings" style="display: none;">
+                    <label>
+                        Select EDOs (comma-separated, e.g., "12,17,24"):
+                        <input type="text" id="edo-list" placeholder="12,17,24,31" value="12">
+                    </label>
+                    <label>
+                        <input type="checkbox" id="edo-allow-negative">
+                        Allow negative cents (e.g., -1\12)
+                    </label>
+                </div>
+            </div>
+
+            <button id="start-btn" class="btn-primary">Start Game</button>
+        </div>
+
+        <!-- Game Panel -->
+        <div id="game-panel" class="panel" style="display: none;">
+            <div class="score-display">
+                <div class="score-item">
+                    <span class="score-label">Timer:</span>
+                    <span id="timer">0:00.00</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Questions:</span>
+                    <span id="question-count">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Total Error:</span>
+                    <span id="total-score">0.00</span>
+                    <span class="score-label">¢</span>
+                </div>
+                <div class="score-item">
+                    <span class="score-label">Avg Error:</span>
+                    <span id="avg-score">0.00</span>
+                    <span class="score-label">¢</span>
+                </div>
+            </div>
+
+            <div class="interval-display">
+                <div class="interval-label">Interval:</div>
+                <div id="interval-value" class="interval-value">3/2</div>
+            </div>
+
+            <div class="input-section">
+                <label for="answer-input">Enter cents:</label>
+                <input type="number" id="answer-input" step="0.01" placeholder="0.00" autofocus>
+                <button id="submit-btn" class="btn-primary">Submit</button>
+            </div>
+
+            <div class="continuum-container">
+                <div class="continuum-labels">
+                    <span>0¢</span>
+                    <span class="mid-label">300¢</span>
+                    <span class="mid-label">600¢</span>
+                    <span class="mid-label">900¢</span>
+                    <span>1200¢</span>
+                </div>
+                <div class="continuum">
+                    <div class="continuum-track"></div>
+                    <!-- 12-EDO notches -->
+                    <div class="edo-notch" style="left: 0%"></div>
+                    <div class="edo-notch" style="left: 8.333%"></div>
+                    <div class="edo-notch" style="left: 16.667%"></div>
+                    <div class="edo-notch" style="left: 25%"></div>
+                    <div class="edo-notch" style="left: 33.333%"></div>
+                    <div class="edo-notch" style="left: 41.667%"></div>
+                    <div class="edo-notch" style="left: 50%"></div>
+                    <div class="edo-notch" style="left: 58.333%"></div>
+                    <div class="edo-notch" style="left: 66.667%"></div>
+                    <div class="edo-notch" style="left: 75%"></div>
+                    <div class="edo-notch" style="left: 83.333%"></div>
+                    <div class="edo-notch" style="left: 91.667%"></div>
+                    <div class="edo-notch" style="left: 100%"></div>
+                    <!-- Markers (hidden by default) -->
+                    <div id="correct-marker" class="continuum-marker correct-marker"></div>
+                    <div id="user-marker" class="continuum-marker user-marker"></div>
+                </div>
+            </div>
+
+            <div id="feedback" class="feedback"></div>
+
+            <div class="game-controls">
+                <button id="skip-btn" class="btn-secondary">Skip</button>
+                <button id="end-btn" class="btn-secondary">End Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
