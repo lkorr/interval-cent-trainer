@@ -40,11 +40,9 @@ const continuum = document.querySelector('.continuum');
 
 // Settings controls
 const enableJi = document.getElementById('enable-ji');
-const jiLimitInput = document.getElementById('ji-limit');
 const jiSettings = document.getElementById('ji-settings');
 const allowNegative = document.getElementById('allow-negative');
 const jiModeRadios = document.querySelectorAll('input[name="ji-mode"]');
-const jiGeneratedSettings = document.getElementById('ji-generated-settings');
 const jiCustomSettings = document.getElementById('ji-custom-settings');
 const customIntervalsInput = document.getElementById('custom-intervals');
 const primeLimitInput = document.getElementById('prime-limit');
