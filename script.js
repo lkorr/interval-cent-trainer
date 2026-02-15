@@ -174,6 +174,12 @@ function generatePrimeIntervals() {
     const ratios = primeRatiosInput.checked;
     const products = primeProductsInput.checked;
 
+    // Check if at least one option is selected
+    if (!numeratorOnly && !ratios && !products) {
+        alert('Please select at least one interval generation option');
+        return;
+    }
+
     // Get all primes up to limit
     const primes = getPrimesUpTo(primeLimit).filter(p => p > 2); // Exclude 2
 
@@ -241,6 +247,13 @@ function generatePrimeIntervals() {
         const [bn, bd] = b.split('/').map(Number);
         return (an / ad) - (bn / bd);
     });
+
+    console.log(`Generated ${intervalArray.length} intervals`);
+
+    if (intervalArray.length === 0) {
+        alert('No intervals generated. Try adjusting your settings.');
+        return;
+    }
 
     customIntervalsInput.value = intervalArray.join('\n');
 }
