@@ -43,9 +43,12 @@ const customIntervalsInput = document.getElementById('custom-intervals');
 const primeLimitInput = document.getElementById('prime-limit');
 const primeExponentInput = document.getElementById('prime-exponent');
 const jiLimitInput = document.getElementById('ji-limit');
-const removeComplexInput = document.getElementById('remove-complex');
 const complexityLimitInput = document.getElementById('complexity-limit');
 const generateIntervalsBtn = document.getElementById('generate-intervals-btn');
+const filterComplexBtn = document.getElementById('filter-complex-btn');
+const filterRangeBtn = document.getElementById('filter-range-btn');
+const centMinInput = document.getElementById('cent-min');
+const centMaxInput = document.getElementById('cent-max');
 const edoListInput = document.getElementById('edo-list');
 const edoSettings = document.getElementById('edo-settings');
 const edoAllIntervals = document.getElementById('edo-all-intervals');
@@ -212,6 +215,97 @@ if (clearIntervalsBtn) {
     });
 }
 
+// Filter complex intervals button
+if (filterComplexBtn) {
+    filterComplexBtn.addEventListener('click', filterComplexIntervals);
+}
+
+// Filter by cent range button
+if (filterRangeBtn) {
+    filterRangeBtn.addEventListener('click', filterByCentRange);
+}
+
+function filterComplexIntervals() {
+    const customText = customIntervalsInput.value.trim();
+    if (!customText) return;
+
+    const complexityLimit = parseInt(complexityLimitInput.value) || 10000;
+    const lines = customText.split('\n');
+    const filtered = [];
+
+    for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+
+        // Parse JI intervals (e.g., "3/2")
+        const jiMatch = line.match(/^(\d+)\/(\d+)$/);
+        if (jiMatch) {
+            const num = parseInt(jiMatch[1]);
+            const den = parseInt(jiMatch[2]);
+
+            if ((num * den) <= complexityLimit) {
+                filtered.push(line);
+            }
+            continue;
+        }
+
+        // Keep EDO intervals unchanged
+        const edoMatch = line.match(/^(-?\d+)\\(\d+)$/);
+        if (edoMatch) {
+            filtered.push(line);
+            continue;
+        }
+
+        // Keep unrecognized lines
+        filtered.push(line);
+    }
+
+    customIntervalsInput.value = filtered.join('\n');
+}
+
+function filterByCentRange() {
+    const customText = customIntervalsInput.value.trim();
+    if (!customText) return;
+
+    const centMin = parseFloat(centMinInput.value) || 0;
+    const centMax = parseFloat(centMaxInput.value) || 1200;
+    const lines = customText.split('\n');
+    const filtered = [];
+
+    for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+
+        let cents = null;
+
+        // Parse JI intervals (e.g., "3/2")
+        const jiMatch = line.match(/^(\d+)\/(\d+)$/);
+        if (jiMatch) {
+            const num = parseInt(jiMatch[1]);
+            const den = parseInt(jiMatch[2]);
+            cents = 1200 * Math.log2(num / den);
+        }
+
+        // Parse EDO intervals (e.g., "7\12")
+        const edoMatch = line.match(/^(-?\d+)\\(\d+)$/);
+        if (edoMatch) {
+            const step = parseInt(edoMatch[1]);
+            const edo = parseInt(edoMatch[2]);
+            cents = (step / edo) * 1200;
+        }
+
+        // Keep intervals within range
+        if (cents !== null && cents >= centMin && cents <= centMax) {
+            filtered.push(line);
+        } else if (cents === null) {
+            // Keep unrecognized lines
+            filtered.push(line);
+        }
+    }
+
+    customIntervalsInput.value = filtered.join('\n');
+}
+
 // Make EDO checkboxes mutually exclusive
 edoAllIntervals.addEventListener('change', () => {
     if (edoAllIntervals.checked) {
@@ -310,18 +404,8 @@ function generateIntervals() {
         }
     }
 
-    // Convert set to array and filter by complexity if enabled
+    // Convert set to array and sort by ratio
     let intervalArray = Array.from(intervals);
-
-    const removeComplex = removeComplexInput.checked;
-    const complexityLimit = parseInt(complexityLimitInput.value) || 10000;
-
-    if (removeComplex) {
-        intervalArray = intervalArray.filter(interval => {
-            const [num, den] = interval.split('/').map(Number);
-            return (num * den) <= complexityLimit;
-        });
-    }
 
     // Sort by ratio
     intervalArray.sort((a, b) => {

@@ -56,13 +56,6 @@
                                 <input type="number" id="prime-exponent" min="1" max="5" value="1">
                             </label>
 
-                            <label class="inline-number">
-                                <input type="checkbox" id="remove-complex">
-                                Remove complex (n×d &gt;
-                                <input type="number" id="complexity-limit" min="1" max="1000000" value="10000" class="medium-number-input">
-                                )
-                            </label>
-
                             <button id="generate-intervals-btn" class="btn-secondary" type="button">Generate JI</button>
                         </div>
                     </div>
@@ -101,9 +94,29 @@
                 <div class="custom-intervals-box">
                     <label>
                         Custom intervals (one per line, e.g., "3/2", "5/4", "7/6", "1\12", "7\12"):
-                        <textarea id="custom-intervals" rows="6" placeholder="3/2&#10;5/4&#10;7/6&#10;9/8&#10;11/8&#10;15/8"></textarea>
+                        <textarea id="custom-intervals" rows="6"></textarea>
                     </label>
-                    <button id="clear-intervals-btn" class="btn-secondary" type="button">Clear</button>
+                    <div class="filter-buttons">
+                        <button id="clear-intervals-btn" class="btn-secondary" type="button">Clear</button>
+                        <div class="filter-group">
+                            <label class="inline-number">
+                                Remove commas/complex intervals (num × denom &gt;
+                                <input type="number" id="complexity-limit" min="1" max="1000000" value="10000" class="medium-number-input">
+                                )
+                            </label>
+                            <button id="filter-complex-btn" class="btn-secondary" type="button">Apply</button>
+                        </div>
+                        <div class="filter-group">
+                            <label class="inline-number">
+                                Cent range:
+                                <input type="number" id="cent-min" min="0" max="1200" value="0" class="small-number-input">
+                                -
+                                <input type="number" id="cent-max" min="0" max="1200" value="1200" class="small-number-input">
+                                ¢
+                            </label>
+                            <button id="filter-range-btn" class="btn-secondary" type="button">Apply</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
