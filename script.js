@@ -50,7 +50,8 @@ const customIntervalsInput = document.getElementById('custom-intervals');
 const primeLimitInput = document.getElementById('prime-limit');
 const primeExponentInput = document.getElementById('prime-exponent');
 const primeNumeratorOnlyInput = document.getElementById('prime-numerator-only');
-const primeMixedInput = document.getElementById('prime-mixed');
+const primeRatiosInput = document.getElementById('prime-ratios');
+const primeProductsInput = document.getElementById('prime-products');
 const generatePrimesBtn = document.getElementById('generate-primes-btn');
 const enableEdo = document.getElementById('enable-edo');
 const edoListInput = document.getElementById('edo-list');
@@ -170,7 +171,8 @@ function generatePrimeIntervals() {
     const primeLimit = parseInt(primeLimitInput.value) || 7;
     const maxExponent = parseInt(primeExponentInput.value) || 1;
     const numeratorOnly = primeNumeratorOnlyInput.checked;
-    const mixed = primeMixedInput.checked;
+    const ratios = primeRatiosInput.checked;
+    const products = primeProductsInput.checked;
 
     // Get all primes up to limit
     const primes = getPrimesUpTo(primeLimit).filter(p => p > 2); // Exclude 2
@@ -194,8 +196,42 @@ function generatePrimeIntervals() {
         }
     }
 
-    if (mixed) {
-        // Generate combinations with primes in both numerator and denominator
+    if (ratios) {
+        // Generate simple prime ratios (one prime over another different prime)
+        for (let i = 0; i < primes.length; i++) {
+            for (let j = 0; j < primes.length; j++) {
+                if (i === j) continue; // Skip same prime
+
+                for (let expNum = 1; expNum <= maxExponent; expNum++) {
+                    for (let expDen = 1; expDen <= maxExponent; expDen++) {
+                        const numerator = Math.pow(primes[i], expNum);
+                        const denominator = Math.pow(primes[j], expDen);
+
+                        // Normalize to within octave
+                        let num = numerator;
+                        let den = denominator;
+
+                        while (num / den >= 2) {
+                            den *= 2;
+                        }
+                        while (num / den < 1) {
+                            num *= 2;
+                        }
+
+                        // Reduce fraction
+                        const g = gcd(num, den);
+                        num /= g;
+                        den /= g;
+
+                        intervals.add(`${num}/${den}`);
+                    }
+                }
+            }
+        }
+    }
+
+    if (products) {
+        // Generate all combinations (n-limit JI with composite numbers)
         generatePrimeCombinations(primes, maxExponent, intervals);
     }
 
