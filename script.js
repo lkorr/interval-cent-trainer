@@ -49,10 +49,8 @@ const jiCustomSettings = document.getElementById('ji-custom-settings');
 const customIntervalsInput = document.getElementById('custom-intervals');
 const primeLimitInput = document.getElementById('prime-limit');
 const primeExponentInput = document.getElementById('prime-exponent');
-const primeNumeratorOnlyInput = document.getElementById('prime-numerator-only');
-const primeRatiosInput = document.getElementById('prime-ratios');
-const primeProductsInput = document.getElementById('prime-products');
-const generatePrimesBtn = document.getElementById('generate-primes-btn');
+const jiLimitInput = document.getElementById('ji-limit');
+const generateIntervalsBtn = document.getElementById('generate-intervals-btn');
 const enableEdo = document.getElementById('enable-edo');
 const edoListInput = document.getElementById('edo-list');
 const edoSettings = document.getElementById('edo-settings');
@@ -148,97 +146,88 @@ enableJi.addEventListener('change', () => {
     jiSettings.style.display = enableJi.checked ? 'block' : 'none';
 });
 
-jiModeRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-        if (radio.value === 'generated') {
-            jiGeneratedSettings.style.display = 'block';
-            jiCustomSettings.style.display = 'none';
-        } else {
-            jiGeneratedSettings.style.display = 'none';
-            jiCustomSettings.style.display = 'block';
-        }
-    });
-});
-
 enableEdo.addEventListener('change', () => {
     edoSettings.style.display = enableEdo.checked ? 'block' : 'none';
 });
 
-// Generate prime intervals
-generatePrimesBtn.addEventListener('click', generatePrimeIntervals);
+// Generate intervals
+generateIntervalsBtn.addEventListener('click', generateIntervals);
 
-function generatePrimeIntervals() {
+function generateIntervals() {
+    const generatorMode = document.querySelector('input[name="generator-mode"]:checked').value;
     const primeLimit = parseInt(primeLimitInput.value) || 7;
     const maxExponent = parseInt(primeExponentInput.value) || 1;
-    const numeratorOnly = primeNumeratorOnlyInput.checked;
-    const ratios = primeRatiosInput.checked;
-    const products = primeProductsInput.checked;
-
-    // Check if at least one option is selected
-    if (!numeratorOnly && !ratios && !products) {
-        alert('Please select at least one interval generation option');
-        return;
-    }
-
-    // Get all primes up to limit
-    const primes = getPrimesUpTo(primeLimit).filter(p => p > 2); // Exclude 2
+    const limit = parseInt(jiLimitInput.value) || 20;
 
     const intervals = new Set();
 
-    if (numeratorOnly) {
-        // Generate primes/2^x (primes only in numerator)
-        for (const prime of primes) {
-            for (let exp = 1; exp <= maxExponent; exp++) {
-                const numerator = Math.pow(prime, exp);
-                // Find appropriate power of 2 to keep within octave
-                for (let pow2 = 0; pow2 <= 10; pow2++) {
-                    const denominator = Math.pow(2, pow2);
-                    const ratio = numerator / denominator;
-                    if (ratio >= 1 && ratio < 2) {
-                        intervals.add(`${numerator}/${denominator}`);
-                    }
-                }
-            }
-        }
-    }
-
-    if (ratios) {
-        // Generate simple prime ratios (one prime over another different prime)
-        for (let i = 0; i < primes.length; i++) {
-            for (let j = 0; j < primes.length; j++) {
-                if (i === j) continue; // Skip same prime
-
-                for (let expNum = 1; expNum <= maxExponent; expNum++) {
-                    for (let expDen = 1; expDen <= maxExponent; expDen++) {
-                        const numerator = Math.pow(primes[i], expNum);
-                        const denominator = Math.pow(primes[j], expDen);
-
-                        // Normalize to within octave
-                        let num = numerator;
-                        let den = denominator;
-
-                        while (num / den >= 2) {
-                            den *= 2;
-                        }
-                        while (num / den < 1) {
-                            num *= 2;
-                        }
-
-                        // Reduce fraction
-                        const g = gcd(num, den);
-                        num /= g;
-                        den /= g;
-
+    if (generatorMode === 'simple-limit') {
+        // Generate all fractions with numerator and denominator less than limit
+        for (let num = 1; num < limit; num++) {
+            for (let den = 1; den < limit; den++) {
+                if (gcd(num, den) === 1) { // Only reduced fractions
+                    const cents = 1200 * Math.log2(num / den);
+                    if (cents >= 0 && cents <= 1200) {
                         intervals.add(`${num}/${den}`);
                     }
                 }
             }
         }
-    }
+    } else {
+        // Get all primes up to limit
+        const primes = getPrimesUpTo(primeLimit).filter(p => p > 2); // Exclude 2
 
-    if (products) {
-        // Generate all combinations (n-limit JI with composite numbers)
-        generatePrimeCombinations(primes, maxExponent, intervals);
+        if (generatorMode === 'primes-2x') {
+            // Generate primes/2^x (primes only in numerator)
+            for (const prime of primes) {
+                for (let exp = 1; exp <= maxExponent; exp++) {
+                    const numerator = Math.pow(prime, exp);
+                    // Find appropriate power of 2 to keep within octave
+                    for (let pow2 = 0; pow2 <= 10; pow2++) {
+                        const denominator = Math.pow(2, pow2);
+                        const ratio = numerator / denominator;
+                        if (ratio >= 1 && ratio < 2) {
+                            intervals.add(`${numerator}/${denominator}`);
+                        }
+                    }
+                }
+            }
+        } else if (generatorMode === 'prime-ratios') {
+            // Generate simple prime ratios (one prime over another different prime)
+            for (let i = 0; i < primes.length; i++) {
+                for (let j = 0; j < primes.length; j++) {
+                    if (i === j) continue; // Skip same prime
+
+                    for (let expNum = 1; expNum <= maxExponent; expNum++) {
+                        for (let expDen = 1; expDen <= maxExponent; expDen++) {
+                            const numerator = Math.pow(primes[i], expNum);
+                            const denominator = Math.pow(primes[j], expDen);
+
+                            // Normalize to within octave
+                            let num = numerator;
+                            let den = denominator;
+
+                            while (num / den >= 2) {
+                                den *= 2;
+                            }
+                            while (num / den < 1) {
+                                num *= 2;
+                            }
+
+                            // Reduce fraction
+                            const g = gcd(num, den);
+                            num /= g;
+                            den /= g;
+
+                            intervals.add(`${num}/${den}`);
+                        }
+                    }
+                }
+            }
+        } else if (generatorMode === 'products') {
+            // Generate all combinations (n-limit JI with composite numbers)
+            generatePrimeCombinations(primes, maxExponent, intervals);
+        }
     }
 
     // Convert set to sorted array and update textarea
@@ -440,12 +429,7 @@ function startGame() {
 
     // Build interval pool
     if (jiEnabled) {
-        const jiMode = document.querySelector('input[name="ji-mode"]:checked').value;
-        if (jiMode === 'generated') {
-            buildJIIntervals();
-        } else {
-            buildCustomJIIntervals();
-        }
+        buildCustomJIIntervals();
     }
 
     if (edoEnabled) {

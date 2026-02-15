@@ -22,48 +22,46 @@
                 </label>
                 <div id="ji-settings" class="subsettings">
                     <label>
-                        <input type="radio" name="ji-mode" value="generated" checked>
-                        Generate intervals automatically
-                    </label>
-                    <div id="ji-generated-settings" class="sub-subsettings">
-                        <label>
-                            Limit (max numerator/denominator):
-                            <input type="number" id="ji-limit" min="2" max="100" value="20">
-                        </label>
-                        <label>
-                            <input type="checkbox" id="allow-negative">
-                            Allow negative cents (e.g., 1/2)
-                        </label>
-                    </div>
-
-                    <label>
-                        <input type="radio" name="ji-mode" value="custom">
+                        <input type="radio" name="ji-mode" value="custom" checked>
                         Use custom interval bank
                     </label>
-                    <div id="ji-custom-settings" class="sub-subsettings" style="display: none;">
+                    <div id="ji-custom-settings" class="sub-subsettings">
                         <div class="prime-generator">
-                            <h4>Prime Interval Generator</h4>
+                            <h4>Interval Generator</h4>
+
                             <label>
-                                Prime limit (highest prime):
-                                <input type="number" id="prime-limit" min="3" max="97" value="7" step="2">
+                                <input type="radio" name="generator-mode" value="simple-limit">
+                                All fractions with limit (max numerator/denominator):
+                                <input type="number" id="ji-limit" min="2" max="100" value="20">
                             </label>
+
                             <label>
-                                Max exponent:
-                                <input type="number" id="prime-exponent" min="1" max="5" value="1">
-                            </label>
-                            <label>
-                                <input type="checkbox" id="prime-numerator-only">
+                                <input type="radio" name="generator-mode" value="primes-2x" checked>
                                 Primes/2^x (primes only in numerator)
                             </label>
+
                             <label>
-                                <input type="checkbox" id="prime-ratios">
+                                <input type="radio" name="generator-mode" value="prime-ratios">
                                 Prime ratios (one prime over another prime)
                             </label>
+
                             <label>
-                                <input type="checkbox" id="prime-products" checked>
+                                <input type="radio" name="generator-mode" value="products">
                                 Products (composite numbers, n-limit JI)
                             </label>
-                            <button id="generate-primes-btn" class="btn-secondary" type="button">Generate Prime Intervals</button>
+
+                            <div class="prime-settings">
+                                <label>
+                                    Prime limit (highest prime):
+                                    <input type="number" id="prime-limit" min="3" max="97" value="7" step="2">
+                                </label>
+                                <label>
+                                    Max exponent (for n-limit JI):
+                                    <input type="number" id="prime-exponent" min="1" max="5" value="1">
+                                </label>
+                            </div>
+
+                            <button id="generate-intervals-btn" class="btn-secondary" type="button">Generate Intervals</button>
                         </div>
                         <label>
                             Custom intervals (one per line, e.g., "3/2", "5/4", "7/6"):
