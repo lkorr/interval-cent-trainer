@@ -391,10 +391,18 @@ function loadIntervalsFromURL() {
             if (settings.jiLimit) jiLimitInput.value = settings.jiLimit;
 
             // Load EDO Generator settings
-            if (settings.edoList) edoListInput.value = settings.edoList;
+            if (settings.edoList !== undefined && settings.edoList !== null) {
+                console.log('Setting edoList to:', settings.edoList);
+                edoListInput.value = settings.edoList;
+                console.log('edoListInput.value is now:', edoListInput.value);
+            }
             if (settings.edoAllIntervals !== undefined) edoAllIntervals.checked = settings.edoAllIntervals;
             if (settings.edoUseApproximations !== undefined) edoUseApproximations.checked = settings.edoUseApproximations;
-            if (settings.edoApproximations) edoApproximations.value = settings.edoApproximations;
+            if (settings.edoApproximations !== undefined && settings.edoApproximations !== null) {
+                console.log('Setting edoApproximations to:', settings.edoApproximations);
+                edoApproximations.value = settings.edoApproximations;
+                console.log('edoApproximations.value is now:', edoApproximations.value);
+            }
 
             // Load filter settings
             if (settings.complexityLimit) complexityLimitInput.value = settings.complexityLimit;
@@ -429,8 +437,13 @@ function loadIntervalsFromURL() {
     }
 }
 
-// Load intervals when page loads
-loadIntervalsFromURL();
+// Load intervals when page loads - wrap in DOMContentLoaded to ensure elements exist
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadIntervalsFromURL);
+} else {
+    // DOM already loaded
+    loadIntervalsFromURL();
+}
 
 // Make EDO checkboxes mutually exclusive
 edoAllIntervals.addEventListener('change', () => {
