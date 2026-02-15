@@ -229,7 +229,7 @@ function filterComplexIntervals() {
     const customText = customIntervalsInput.value.trim();
     if (!customText) return;
 
-    const complexityLimit = parseInt(complexityLimitInput.value) || 10000;
+    const complexityLimit = parseInt(complexityLimitInput.value) || 100;
     const lines = customText.split('\n');
     const filtered = [];
 
