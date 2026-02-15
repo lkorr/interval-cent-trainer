@@ -41,7 +41,6 @@ const continuum = document.querySelector('.continuum');
 // Settings controls
 const enableJi = document.getElementById('enable-ji');
 const jiSettings = document.getElementById('ji-settings');
-const allowNegative = document.getElementById('allow-negative');
 const jiModeRadios = document.querySelectorAll('input[name="ji-mode"]');
 const jiCustomSettings = document.getElementById('ji-custom-settings');
 const customIntervalsInput = document.getElementById('custom-intervals');
@@ -427,7 +426,7 @@ function startGame() {
     jiEnabled = enableJi.checked;
     console.log('jiEnabled:', jiEnabled);
     jiLimit = parseInt(jiLimitInput.value) || 20;
-    jiAllowNegative = allowNegative.checked;
+    jiAllowNegative = false; // JI doesn't have allow negative option anymore
     edoEnabled = enableEdo.checked;
     edoAllowNegative = edoAllowNegativeInput.checked;
     soundEnabled = soundEnabledInput.checked;
