@@ -19,6 +19,7 @@ let totalQuestions = 0;
 let startTime = null;
 let timerInterval = null;
 let waitingForNext = false;
+let questionStartTime = null;
 
 // Settings
 let jiLimit = 20;
@@ -65,13 +66,21 @@ const edoUseApproximations = document.getElementById('edo-use-approximations');
 const generateEdoIntervalsBtn = document.getElementById('generate-edo-intervals-btn');
 const soundEnabledInput = document.getElementById('sound-enabled');
 const playIntervalsInput = document.getElementById('play-intervals');
+const waveformTypeInput = document.getElementById('waveform-type');
 const roundsInput = document.getElementById('rounds');
 const hideIntervalInput = document.getElementById('hide-interval');
+
+// Game panel audio controls
+const soundEnabledGameInput = document.getElementById('sound-enabled-game');
+const playIntervalsGameInput = document.getElementById('play-intervals-game');
+const waveformTypeGameInput = document.getElementById('waveform-type-game');
+const replayIntervalBtn = document.getElementById('replay-interval-btn');
 
 // Audio context and sound settings
 let audioContext = null;
 let soundEnabled = true;
 let playIntervals = true;
+let waveformType = 'sawtooth';
 let hideInterval = false;
 let numRounds = 1;
 
@@ -105,14 +114,39 @@ function playIntervalAudio(cents) {
     // Calculate interval frequency
     const intervalFreq = baseFreq * Math.pow(2, cents / 1200);
 
+    // Determine actual waveform and whether to filter
+    let actualWaveform = waveformType;
+    let useFilter = false;
+
+    if (waveformType === 'filtered-square') {
+        actualWaveform = 'square';
+        useFilter = true;
+    } else if (waveformType === 'filtered-sawtooth') {
+        actualWaveform = 'sawtooth';
+        useFilter = true;
+    }
+
     // Play root note
     const osc1 = audioContext.createOscillator();
     const gain1 = audioContext.createGain();
-    osc1.connect(gain1);
-    gain1.connect(audioContext.destination);
 
-    osc1.type = 'sawtooth';
+    osc1.type = actualWaveform;
     osc1.frequency.value = baseFreq;
+
+    // Connect with or without filter
+    if (useFilter) {
+        const filter1 = audioContext.createBiquadFilter();
+        filter1.type = 'lowpass';
+        filter1.frequency.value = 1000; // 1kHz cutoff
+        filter1.Q.value = 1.0; // Standard Q value
+
+        osc1.connect(filter1);
+        filter1.connect(gain1);
+    } else {
+        osc1.connect(gain1);
+    }
+
+    gain1.connect(audioContext.destination);
     gain1.gain.setValueAtTime(0.15, now);
     gain1.gain.exponentialRampToValueAtTime(0.001, now + release);
 
@@ -122,11 +156,24 @@ function playIntervalAudio(cents) {
     // Play interval note after 300ms
     const osc2 = audioContext.createOscillator();
     const gain2 = audioContext.createGain();
-    osc2.connect(gain2);
-    gain2.connect(audioContext.destination);
 
-    osc2.type = 'sawtooth';
+    osc2.type = actualWaveform;
     osc2.frequency.value = intervalFreq;
+
+    // Connect with or without filter
+    if (useFilter) {
+        const filter2 = audioContext.createBiquadFilter();
+        filter2.type = 'lowpass';
+        filter2.frequency.value = 1000; // 1kHz cutoff
+        filter2.Q.value = 1.0; // Standard Q value
+
+        osc2.connect(filter2);
+        filter2.connect(gain2);
+    } else {
+        osc2.connect(gain2);
+    }
+
+    gain2.connect(audioContext.destination);
     gain2.gain.setValueAtTime(0.15, now + 0.3);
     gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3 + release);
 
@@ -198,7 +245,43 @@ function playSound(accuracy) {
     }
 }
 
-// Event listeners for settings (removed enable checkboxes, so these listeners are no longer needed)
+// Event listeners to sync audio controls between settings and game panel
+soundEnabledInput.addEventListener('change', () => {
+    soundEnabled = soundEnabledInput.checked;
+    soundEnabledGameInput.checked = soundEnabledInput.checked;
+});
+
+soundEnabledGameInput.addEventListener('change', () => {
+    soundEnabled = soundEnabledGameInput.checked;
+    soundEnabledInput.checked = soundEnabledGameInput.checked;
+});
+
+playIntervalsInput.addEventListener('change', () => {
+    playIntervals = playIntervalsInput.checked;
+    playIntervalsGameInput.checked = playIntervalsInput.checked;
+});
+
+playIntervalsGameInput.addEventListener('change', () => {
+    playIntervals = playIntervalsGameInput.checked;
+    playIntervalsInput.checked = playIntervalsGameInput.checked;
+});
+
+waveformTypeInput.addEventListener('change', () => {
+    waveformType = waveformTypeInput.value;
+    waveformTypeGameInput.value = waveformTypeInput.value;
+});
+
+waveformTypeGameInput.addEventListener('change', () => {
+    waveformType = waveformTypeGameInput.value;
+    waveformTypeInput.value = waveformTypeGameInput.value;
+});
+
+// Replay interval button
+replayIntervalBtn.addEventListener('click', () => {
+    if (currentAnswer !== null) {
+        playIntervalAudio(currentAnswer);
+    }
+});
 
 // Generate intervals
 console.log('generateIntervalsBtn:', generateIntervalsBtn);
@@ -347,6 +430,7 @@ function shareIntervals() {
         // Audio settings
         soundEnabled: soundEnabledInput.checked,
         playIntervals: playIntervalsInput.checked,
+        waveformType: waveformTypeInput.value,
         // Game settings
         rounds: roundsInput.value,
         hideInterval: hideIntervalInput.checked
@@ -420,6 +504,7 @@ function loadIntervalsFromURL() {
             // Load audio settings
             if (settings.soundEnabled !== undefined) soundEnabledInput.checked = settings.soundEnabled;
             if (settings.playIntervals !== undefined) playIntervalsInput.checked = settings.playIntervals;
+            if (settings.waveformType !== undefined) waveformTypeInput.value = settings.waveformType;
 
             // Load game settings
             if (settings.rounds) roundsInput.value = settings.rounds;
@@ -844,8 +929,14 @@ function startGame() {
     jiLimit = parseInt(jiLimitInput.value) || 20;
     soundEnabled = soundEnabledInput.checked;
     playIntervals = playIntervalsInput.checked;
+    waveformType = waveformTypeInput.value;
     hideInterval = hideIntervalInput.checked;
     numRounds = parseInt(roundsInput.value) || 1;
+
+    // Sync audio controls to game panel
+    soundEnabledGameInput.checked = soundEnabled;
+    playIntervalsGameInput.checked = playIntervals;
+    waveformTypeGameInput.value = waveformType;
 
     const edoInput = edoListInput.value.trim();
     edoList = edoInput.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
@@ -1077,6 +1168,9 @@ function nextQuestion() {
         timerInterval = setInterval(updateTimer, 100);
     }
 
+    // Start question timer
+    questionStartTime = Date.now();
+
     // Play the interval audio
     playIntervalAudio(currentAnswer);
 }
@@ -1091,8 +1185,9 @@ function submitAnswer() {
         return;
     }
 
-    // Calculate error
+    // Calculate error and time taken
     const error = Math.abs(userAnswer - currentAnswer);
+    const timeTaken = (Date.now() - questionStartTime) / 1000; // Convert to seconds
     totalError += error;
     questionCount++;
 
@@ -1124,7 +1219,7 @@ function submitAnswer() {
         feedback.style.border = '';
         playSound('excellent');
         // Track by accuracy
-        intervalsByAccuracy.perfect.push({ ...currentInterval, error });
+        intervalsByAccuracy.perfect.push({ ...currentInterval, error, timeTaken });
     } else if (error < 5) {
         feedback.className = 'feedback correct';
         feedback.textContent = `Great! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
@@ -1133,7 +1228,7 @@ function submitAnswer() {
         feedback.style.border = '';
         playSound('excellent');
         // Track by accuracy
-        intervalsByAccuracy.excellent.push({ ...currentInterval, error });
+        intervalsByAccuracy.excellent.push({ ...currentInterval, error, timeTaken });
     } else if (error < 10) {
         // Light green/yellow (lime-ish)
         feedback.className = 'feedback good';
@@ -1143,7 +1238,7 @@ function submitAnswer() {
         feedback.style.border = '2px solid #c4db9b';
         playSound('excellent');
         // Track by accuracy
-        intervalsByAccuracy.good.push({ ...currentInterval, error });
+        intervalsByAccuracy.good.push({ ...currentInterval, error, timeTaken });
         missedIntervals.push(currentInterval);
     } else if (error < 25) {
         // Yellow
@@ -1154,7 +1249,7 @@ function submitAnswer() {
         feedback.style.border = '2px solid #ffeaa7';
         playSound('good');
         // Track by accuracy
-        intervalsByAccuracy.decent.push({ ...currentInterval, error });
+        intervalsByAccuracy.decent.push({ ...currentInterval, error, timeTaken });
         missedIntervals.push(currentInterval);
     } else if (error < 40) {
         // Orange
@@ -1165,7 +1260,7 @@ function submitAnswer() {
         feedback.style.border = '2px solid #ffb366';
         playSound('good');
         // Track by accuracy
-        intervalsByAccuracy.poor.push({ ...currentInterval, error });
+        intervalsByAccuracy.poor.push({ ...currentInterval, error, timeTaken });
         missedIntervals.push(currentInterval);
     } else {
         // Red
@@ -1176,7 +1271,7 @@ function submitAnswer() {
         feedback.style.border = '';
         playSound('wrong');
         // Track by accuracy
-        intervalsByAccuracy.bad.push({ ...currentInterval, error });
+        intervalsByAccuracy.bad.push({ ...currentInterval, error, timeTaken });
         missedIntervals.push(currentInterval);
     }
 
@@ -1222,6 +1317,7 @@ function endGame() {
 
     const elapsed = Date.now() - startTime;
     const seconds = (elapsed / 1000).toFixed(2);
+    const avgTimePerQuestion = questionCount > 0 ? (elapsed / 1000 / questionCount).toFixed(2) : 0;
 
     let message = 'Game Over!\n\n';
     message += `Time: ${seconds}s\n`;
@@ -1229,6 +1325,7 @@ function endGame() {
     message += `Total error: ${totalError.toFixed(2)}¢\n`;
     if (questionCount > 0) {
         message += `Average error: ${(totalError / questionCount).toFixed(2)}¢\n`;
+        message += `Average time per question: ${avgTimePerQuestion}s\n`;
     }
     if (missedIntervals.length > 0) {
         message += `\nMissed intervals: ${missedIntervals.length}`;
@@ -1259,6 +1356,14 @@ function endGame() {
         </label>
     </div>`;
 
+    // Add "Repeat with intervals that took longer than X seconds" section
+    accuracyHTML += `<br><div style="margin-top: 10px;">
+        <label>Repeat with all intervals that took longer than
+        <input type="number" id="time-threshold-input" value="5" min="0" step="0.5" style="width: 60px; display: inline-block; margin: 0 5px;">s
+        <button id="load-time-threshold-btn" class="btn-secondary" style="margin-left: 10px; font-size: 0.85em; padding: 5px 12px;">Load to Bank</button>
+        </label>
+    </div>`;
+
     // Show summary in game panel instead of alert
     feedback.innerHTML = `
         <div style="text-align: left;">
@@ -1267,6 +1372,7 @@ function endGame() {
             Questions answered: ${questionCount}<br>
             Total error: ${totalError.toFixed(2)}¢<br>
             ${questionCount > 0 ? `Average error: ${(totalError / questionCount).toFixed(2)}¢<br>` : ''}
+            ${questionCount > 0 ? `Average time per question: ${avgTimePerQuestion}s<br>` : ''}
             ${accuracyHTML}
         </div>
     `;
@@ -1276,11 +1382,16 @@ function endGame() {
     feedback.style.border = '2px solid #ddd';
     feedback.style.padding = '20px';
 
-    // Add event listener for threshold-based load to bank button
+    // Add event listeners for threshold-based load to bank buttons
     setTimeout(() => {
         const thresholdBtn = document.getElementById('load-threshold-btn');
         if (thresholdBtn) {
             thresholdBtn.addEventListener('click', loadThresholdToBank);
+        }
+
+        const timeThresholdBtn = document.getElementById('load-time-threshold-btn');
+        if (timeThresholdBtn) {
+            timeThresholdBtn.addEventListener('click', loadTimeThresholdToBank);
         }
     }, 0);
 
@@ -1351,6 +1462,41 @@ function loadThresholdToBank() {
     settingsPanel.style.display = 'block';
 
     alert(`Loaded ${allIntervals.length} intervals with error > ${threshold}¢ to the interval bank.`);
+}
+
+function loadTimeThresholdToBank() {
+    // Get the threshold value from the input
+    const thresholdInput = document.getElementById('time-threshold-input');
+    const threshold = parseFloat(thresholdInput.value);
+
+    // Collect all intervals that took longer than the threshold
+    const allIntervals = [];
+
+    // Check each interval in all accuracy ranges
+    for (const rangeKey in intervalsByAccuracy) {
+        for (const interval of intervalsByAccuracy[rangeKey]) {
+            if (interval.timeTaken > threshold) {
+                allIntervals.push(interval.display);
+            }
+        }
+    }
+
+    // Clear the custom intervals textarea and fill with selected intervals
+    customIntervalsInput.value = allIntervals.join('\n');
+
+    // Return to settings panel
+    document.querySelector('.interval-display').style.display = '';
+    document.querySelector('.input-section').style.display = '';
+    document.querySelector('.continuum-container').style.display = '';
+    skipBtn.style.display = '';
+    submitBtn.style.display = '';
+    endBtn.textContent = 'End Game';
+    endBtn.onclick = endGame;
+
+    gamePanel.style.display = 'none';
+    settingsPanel.style.display = 'block';
+
+    alert(`Loaded ${allIntervals.length} intervals that took longer than ${threshold}s to the interval bank.`);
 }
 
 function loadMissedToBank() {

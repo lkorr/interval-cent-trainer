@@ -135,6 +135,17 @@
                     <input type="checkbox" id="play-intervals" checked>
                     Play intervals (hear the interval when question is shown)
                 </label>
+                <label>
+                    Waveform type:
+                    <select id="waveform-type">
+                        <option value="sine">Sine Wave</option>
+                        <option value="triangle">Triangle Wave</option>
+                        <option value="sawtooth" selected>Sawtooth Wave</option>
+                        <option value="square">Square Wave</option>
+                        <option value="filtered-square">Filtered Square Wave (1kHz LPF)</option>
+                        <option value="filtered-sawtooth">Filtered Sawtooth Wave (1kHz LPF)</option>
+                    </select>
+                </label>
             </div>
 
             <div class="settings-section">
@@ -173,6 +184,30 @@
                     <span id="avg-score">0.00</span>
                     <span class="score-label">¢</span>
                 </div>
+            </div>
+
+            <div class="settings-section" style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                <h3 style="margin-top: 0;">Audio Controls</h3>
+                <label>
+                    <input type="checkbox" id="sound-enabled-game" checked>
+                    Enable sound feedback
+                </label>
+                <label>
+                    <input type="checkbox" id="play-intervals-game" checked>
+                    Play intervals (hear the interval when question is shown)
+                </label>
+                <label>
+                    Waveform type:
+                    <select id="waveform-type-game">
+                        <option value="sine">Sine Wave</option>
+                        <option value="triangle">Triangle Wave</option>
+                        <option value="sawtooth" selected>Sawtooth Wave</option>
+                        <option value="square">Square Wave</option>
+                        <option value="filtered-square">Filtered Square Wave (1kHz LPF)</option>
+                        <option value="filtered-sawtooth">Filtered Sawtooth Wave (1kHz LPF)</option>
+                    </select>
+                </label>
+                <button id="replay-interval-btn" class="btn-secondary" style="margin-top: 10px;">Replay Interval</button>
             </div>
 
             <div class="interval-display">
