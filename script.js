@@ -73,13 +73,6 @@ const repeatMissedInput = document.getElementById('repeat-missed');
 const repeatThresholdInput = document.getElementById('repeat-threshold');
 const randomRootInput = document.getElementById('random-root');
 
-// Debug check for elements
-console.log('Repeat missed elements:', {
-    repeatMissedInput: repeatMissedInput,
-    repeatThresholdInput: repeatThresholdInput,
-    randomRootInput: randomRootInput
-});
-
 // Game panel audio controls
 const soundEnabledGameInput = document.getElementById('sound-enabled-game');
 const playIntervalsGameInput = document.getElementById('play-intervals-game');
@@ -975,8 +968,6 @@ function startGame() {
     repeatMissed = repeatMissedInput.checked;
     repeatThreshold = parseFloat(repeatThresholdInput.value) || 5;
 
-    console.log(`Game starting with: repeatMissed=${repeatMissed}, repeatThreshold=${repeatThreshold}`);
-
     // Sync audio controls to game panel
     soundEnabledGameInput.checked = soundEnabled;
     playIntervalsGameInput.checked = playIntervals;
@@ -1237,16 +1228,10 @@ function submitAnswer() {
     totalError += error;
     questionCount++;
 
-    // Debug logging for repeat missed feature
-    console.log(`Answer submitted - Error: ${error.toFixed(2)}¢, repeatMissed: ${repeatMissed}, repeatThreshold: ${repeatThreshold}, remainingIntervals before: ${remainingIntervals.length}`);
-
     // Check if interval should be re-added to queue
     if (repeatMissed && error > repeatThreshold) {
         remainingIntervals.push(currentInterval);
         shuffleArray(remainingIntervals);
-        console.log(`✓ Interval re-added to queue. Remaining: ${remainingIntervals.length}`);
-    } else {
-        console.log(`✗ Interval NOT re-added. repeatMissed=${repeatMissed}, error > threshold = ${error > repeatThreshold}`);
     }
 
     // Update score display
