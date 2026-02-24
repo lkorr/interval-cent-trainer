@@ -74,6 +74,10 @@ const hideIntervalInput = document.getElementById('hide-interval');
 const soundEnabledGameInput = document.getElementById('sound-enabled-game');
 const playIntervalsGameInput = document.getElementById('play-intervals-game');
 const waveformTypeGameInput = document.getElementById('waveform-type-game');
+const releaseTimeInput = document.getElementById('release-time');
+const releaseTimeValueSpan = document.getElementById('release-time-value');
+const releaseTimeGameInput = document.getElementById('release-time-game');
+const releaseTimeValueGameSpan = document.getElementById('release-time-value-game');
 const replayIntervalBtn = document.getElementById('replay-interval-btn');
 
 // Audio context and sound settings
@@ -81,6 +85,7 @@ let audioContext = null;
 let soundEnabled = true;
 let playIntervals = true;
 let waveformType = 'sawtooth';
+let releaseTime = 4.0;
 let hideInterval = false;
 let numRounds = 1;
 
@@ -109,7 +114,6 @@ function playIntervalAudio(cents) {
 
     const now = audioContext.currentTime;
     const baseFreq = 220; // A3
-    const release = 4.0; // Long release for overlapping intervals
 
     // Calculate interval frequency
     const intervalFreq = baseFreq * Math.pow(2, cents / 1200);
@@ -148,10 +152,10 @@ function playIntervalAudio(cents) {
 
     gain1.connect(audioContext.destination);
     gain1.gain.setValueAtTime(0.15, now);
-    gain1.gain.exponentialRampToValueAtTime(0.001, now + release);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + releaseTime);
 
     osc1.start(now);
-    osc1.stop(now + release);
+    osc1.stop(now + releaseTime);
 
     // Play interval note after 300ms
     const osc2 = audioContext.createOscillator();
@@ -175,10 +179,10 @@ function playIntervalAudio(cents) {
 
     gain2.connect(audioContext.destination);
     gain2.gain.setValueAtTime(0.15, now + 0.3);
-    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3 + release);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.3 + releaseTime);
 
     osc2.start(now + 0.3);
-    osc2.stop(now + 0.3 + release);
+    osc2.stop(now + 0.3 + releaseTime);
 }
 
 // Play sound based on accuracy
@@ -274,6 +278,20 @@ waveformTypeInput.addEventListener('change', () => {
 waveformTypeGameInput.addEventListener('change', () => {
     waveformType = waveformTypeGameInput.value;
     waveformTypeInput.value = waveformTypeGameInput.value;
+});
+
+releaseTimeInput.addEventListener('input', () => {
+    releaseTime = parseFloat(releaseTimeInput.value);
+    releaseTimeValueSpan.textContent = releaseTime.toFixed(1);
+    releaseTimeGameInput.value = releaseTimeInput.value;
+    releaseTimeValueGameSpan.textContent = releaseTime.toFixed(1);
+});
+
+releaseTimeGameInput.addEventListener('input', () => {
+    releaseTime = parseFloat(releaseTimeGameInput.value);
+    releaseTimeValueGameSpan.textContent = releaseTime.toFixed(1);
+    releaseTimeInput.value = releaseTimeGameInput.value;
+    releaseTimeValueSpan.textContent = releaseTime.toFixed(1);
 });
 
 // Replay interval button
@@ -930,6 +948,7 @@ function startGame() {
     soundEnabled = soundEnabledInput.checked;
     playIntervals = playIntervalsInput.checked;
     waveformType = waveformTypeInput.value;
+    releaseTime = parseFloat(releaseTimeInput.value) || 4.0;
     hideInterval = hideIntervalInput.checked;
     numRounds = parseInt(roundsInput.value) || 1;
 
@@ -937,6 +956,8 @@ function startGame() {
     soundEnabledGameInput.checked = soundEnabled;
     playIntervalsGameInput.checked = playIntervals;
     waveformTypeGameInput.value = waveformType;
+    releaseTimeGameInput.value = releaseTimeInput.value;
+    releaseTimeValueGameSpan.textContent = releaseTime.toFixed(1);
 
     const edoInput = edoListInput.value.trim();
     edoList = edoInput.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
