@@ -69,6 +69,9 @@ const playIntervalsInput = document.getElementById('play-intervals');
 const waveformTypeInput = document.getElementById('waveform-type');
 const roundsInput = document.getElementById('rounds');
 const hideIntervalInput = document.getElementById('hide-interval');
+const repeatMissedInput = document.getElementById('repeat-missed');
+const repeatThresholdInput = document.getElementById('repeat-threshold');
+const randomRootInput = document.getElementById('random-root');
 
 // Game panel audio controls
 const soundEnabledGameInput = document.getElementById('sound-enabled-game');
@@ -86,8 +89,11 @@ let soundEnabled = true;
 let playIntervals = true;
 let waveformType = 'sawtooth';
 let releaseTime = 4.0;
+let randomRoot = false;
 let hideInterval = false;
 let numRounds = 1;
+let repeatMissed = false;
+let repeatThreshold = 0.5;
 
 // Initialize audio context on first user interaction
 function initAudio() {
@@ -113,7 +119,14 @@ function playIntervalAudio(cents) {
     }
 
     const now = audioContext.currentTime;
-    const baseFreq = 220; // A3
+
+    // Calculate base frequency (with random variation if enabled)
+    let baseFreq = 220; // A3
+    if (randomRoot) {
+        // Random variation ±600¢ (half octave in each direction)
+        const randomCents = (Math.random() * 1200) - 600; // -600 to +600
+        baseFreq = 220 * Math.pow(2, randomCents / 1200);
+    }
 
     // Calculate interval frequency
     const intervalFreq = baseFreq * Math.pow(2, cents / 1200);
@@ -949,8 +962,11 @@ function startGame() {
     playIntervals = playIntervalsInput.checked;
     waveformType = waveformTypeInput.value;
     releaseTime = parseFloat(releaseTimeInput.value) || 4.0;
+    randomRoot = randomRootInput.checked;
     hideInterval = hideIntervalInput.checked;
     numRounds = parseInt(roundsInput.value) || 1;
+    repeatMissed = repeatMissedInput.checked;
+    repeatThreshold = parseFloat(repeatThresholdInput.value) || 0.5;
 
     // Sync audio controls to game panel
     soundEnabledGameInput.checked = soundEnabled;
@@ -1211,6 +1227,12 @@ function submitAnswer() {
     const timeTaken = (Date.now() - questionStartTime) / 1000; // Convert to seconds
     totalError += error;
     questionCount++;
+
+    // Check if interval should be re-added to queue
+    if (repeatMissed && error > repeatThreshold) {
+        remainingIntervals.push(currentInterval);
+        shuffleArray(remainingIntervals);
+    }
 
     // Update score display
     questionCountEl.textContent = questionCount;
