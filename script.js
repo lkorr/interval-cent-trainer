@@ -109,7 +109,7 @@ function playIntervalAudio(cents) {
 
     const now = audioContext.currentTime;
     const baseFreq = 220; // A3
-    const release = 0.6; // Medium-high release
+    const release = 4.0; // Long release for overlapping intervals
 
     // Calculate interval frequency
     const intervalFreq = baseFreq * Math.pow(2, cents / 1200);
@@ -1536,6 +1536,14 @@ function retryMissedIntervals() {
     gameActive = true;
     questionCount = 0;
     totalError = 0;
+    intervalsByAccuracy = {
+        perfect: [],
+        excellent: [],
+        good: [],
+        decent: [],
+        poor: [],
+        bad: []
+    };
 
     // Use only the missed intervals
     remainingIntervals = [...missedIntervals];
