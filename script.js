@@ -368,8 +368,10 @@ function countIntervalsForLevel(level) {
 // Add hover tooltips to show interval count
 document.querySelectorAll('.level-card').forEach(card => {
     card.addEventListener('mouseenter', function() {
-        const levelNum = this.querySelector('.level-num').textContent;
-        const level = parseInt(levelNum);
+        // Get the actual level ID from the button's data-level attribute
+        const modeBtn = this.querySelector('.mode-btn');
+        if (!modeBtn) return;
+        const level = parseInt(modeBtn.dataset.level);
         const count = countIntervalsForLevel(level);
 
         // Create or update tooltip
