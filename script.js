@@ -100,6 +100,8 @@ let hideInterval = false;
 let numRounds = 1;
 let repeatMissed = false;
 let repeatThreshold = 5;
+let repeatSlow = false;
+let repeatSlowThreshold = 5;
 let centMode = false;
 
 // Initialize audio context on first user interaction
@@ -403,6 +405,8 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
         // Apply quick settings before configuring level
         const repeatMissedQuick = document.getElementById('repeat-missed-quick');
         const repeatThresholdQuick = document.getElementById('repeat-threshold-quick');
+        const repeatSlowQuick = document.getElementById('repeat-slow-quick');
+        const repeatSlowThresholdQuick = document.getElementById('repeat-slow-threshold-quick');
         const audioOnlyQuick = document.getElementById('audio-only-quick');
 
         if (repeatMissedQuick && repeatMissedQuick.checked) {
@@ -410,6 +414,13 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
             repeatThresholdInput.value = repeatThresholdQuick.value;
         } else if (repeatMissedQuick) {
             repeatMissedInput.checked = false;
+        }
+
+        if (repeatSlowQuick && repeatSlowQuick.checked) {
+            repeatSlow = true;
+            repeatSlowThreshold = parseFloat(repeatSlowThresholdQuick.value) || 5;
+        } else if (repeatSlowQuick) {
+            repeatSlow = false;
         }
 
         if (audioOnlyQuick && audioOnlyQuick.checked) {
@@ -1625,7 +1636,14 @@ function submitAnswer() {
     questionCount++;
 
     // Check if interval should be re-added to queue
+    let shouldRepeat = false;
     if (repeatMissed && error > repeatThreshold) {
+        shouldRepeat = true;
+    }
+    if (repeatSlow && timeTaken > repeatSlowThreshold) {
+        shouldRepeat = true;
+    }
+    if (shouldRepeat) {
         remainingIntervals.push(currentInterval);
         shuffleArray(remainingIntervals);
     }
