@@ -151,15 +151,16 @@ function getLevelConfig(level) {
         1: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000, filterType: 'primes-only' },
         2: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000, filterType: 'reciprocals-only' },
         3: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000 },
-        4: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 100 },
-        5: { mode: 'simple-limit', limit: 31, complexityMin: 100, complexityMax: 150 },
-        6: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 150 },
-        7: { mode: 'simple-limit', limit: 31, complexityMin: 150, complexityMax: 200 },
-        8: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 200 },
-        9: { mode: 'simple-limit', limit: 31, complexityMin: 200, complexityMax: 300 },
-        10: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 300 },
-        11: { mode: 'simple-limit', limit: 31, complexityMin: 300, complexityMax: 400 },
-        12: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 400 }
+        4: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 50 },
+        5: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 100 },
+        6: { mode: 'simple-limit', limit: 31, complexityMin: 100, complexityMax: 150 },
+        7: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 150 },
+        8: { mode: 'simple-limit', limit: 31, complexityMin: 150, complexityMax: 200 },
+        9: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 200 },
+        10: { mode: 'simple-limit', limit: 31, complexityMin: 200, complexityMax: 300 },
+        11: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 300 },
+        12: { mode: 'simple-limit', limit: 31, complexityMin: 300, complexityMax: 400 },
+        13: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 400 }
     };
     return configs[level];
 }
