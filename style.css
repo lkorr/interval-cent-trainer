@@ -92,6 +92,37 @@ h2 {
     margin-bottom: 25px;
 }
 
+.header-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+#custom-mode-btn-top {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#custom-mode-btn-top:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46a8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+}
+
+#custom-mode-btn-top:active {
+    transform: translateY(0) scale(0.98);
+}
+
 .help-btn {
     width: 36px;
     height: 36px;
@@ -1010,33 +1041,6 @@ textarea:focus {
     box-shadow: 0 6px 16px rgba(72,187,120,0.4);
 }
 
-.custom-mode-section {
-    text-align: center;
-    margin-top: 40px;
-    padding-top: 30px;
-    border-top: 2px solid rgba(0,0,0,0.08);
-}
-
-#custom-mode-btn {
-    padding: 16px 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 16px rgba(102,126,234,0.3);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-#custom-mode-btn:hover {
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46a8 100%);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(102,126,234,0.4);
-}
 
 #back-to-levels-btn {
     margin-bottom: 20px;
