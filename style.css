@@ -100,22 +100,24 @@ h2 {
 
 #custom-mode-btn-top {
     padding: 10px 24px;
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-    color: white;
-    border: none;
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
     border-radius: 8px;
     font-size: 0.95em;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(72,187,120,0.3);
+    box-shadow: 0 2px 8px rgba(102,126,234,0.2);
     letter-spacing: 0.3px;
 }
 
 #custom-mode-btn-top:hover {
-    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+    background: rgba(102,126,234,0.1);
+    border-color: #5a67d8;
+    color: #5a67d8;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(72,187,120,0.4);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.3);
 }
 
 #custom-mode-btn-top:active {
