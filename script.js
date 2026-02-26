@@ -173,10 +173,22 @@ function getLevelConfig(level) {
         23: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 550 },
         24: { mode: 'simple-limit', limit: 40, complexityMin: 550, complexityMax: 600 },
         25: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 600 },
-        26: { mode: 'simple-limit', limit: 40, complexityMin: 600, complexityMax: 700 },
-        27: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 700 },
-        28: { mode: 'simple-limit', limit: 40, complexityMin: 700, complexityMax: 1000 },
-        29: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 1000 }
+        26: { mode: 'simple-limit', limit: 40, complexityMin: 600, complexityMax: 650 },
+        27: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 650 },
+        28: { mode: 'simple-limit', limit: 40, complexityMin: 650, complexityMax: 700 },
+        29: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 700 },
+        30: { mode: 'simple-limit', limit: 40, complexityMin: 700, complexityMax: 750 },
+        31: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 750 },
+        32: { mode: 'simple-limit', limit: 40, complexityMin: 750, complexityMax: 800 },
+        33: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 800 },
+        34: { mode: 'simple-limit', limit: 40, complexityMin: 800, complexityMax: 850 },
+        35: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 850 },
+        36: { mode: 'simple-limit', limit: 40, complexityMin: 850, complexityMax: 900 },
+        37: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 900 },
+        38: { mode: 'simple-limit', limit: 40, complexityMin: 900, complexityMax: 950 },
+        39: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 950 },
+        40: { mode: 'simple-limit', limit: 40, complexityMin: 950, complexityMax: 1000 },
+        41: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 1000 }
     };
     return configs[level];
 }
@@ -387,6 +399,25 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
         const level = parseInt(btn.dataset.level);
         const reverseMode = btn.dataset.mode === 'reverse';
         initAudio();
+
+        // Apply quick settings before configuring level
+        const repeatMissedQuick = document.getElementById('repeat-missed-quick');
+        const repeatThresholdQuick = document.getElementById('repeat-threshold-quick');
+        const audioOnlyQuick = document.getElementById('audio-only-quick');
+
+        if (repeatMissedQuick && repeatMissedQuick.checked) {
+            repeatMissedInput.checked = true;
+            repeatThresholdInput.value = repeatThresholdQuick.value;
+        } else if (repeatMissedQuick) {
+            repeatMissedInput.checked = false;
+        }
+
+        if (audioOnlyQuick && audioOnlyQuick.checked) {
+            hideIntervalInput.checked = true;
+        } else if (audioOnlyQuick) {
+            hideIntervalInput.checked = false;
+        }
+
         configureLevel(level, reverseMode);
         startGame();
     });

@@ -17,6 +17,18 @@
         <div id="level-select-panel" class="panel">
             <h2>Select Level</h2>
 
+            <!-- Quick Settings -->
+            <div class="quick-settings">
+                <label class="quick-setting-item">
+                    <input type="checkbox" id="repeat-missed-quick" checked>
+                    Repeat missed intervals (error &gt; <input type="number" id="repeat-threshold-quick" min="0" max="100" step="0.1" value="0.6" class="small-number-input">¢)
+                </label>
+                <label class="quick-setting-item">
+                    <input type="checkbox" id="audio-only-quick">
+                    Audio-only mode (Ear training)
+                </label>
+            </div>
+
                         <div class="levels-grid">
                 <div class="level-pair">
                     <h3 class="pair-title">Level 1</h3>
@@ -26,8 +38,8 @@
                             <span class="level-desc">Primes only</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="1" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="1" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="1" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="1" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -36,8 +48,8 @@
                             <span class="level-desc">Reciprocals only</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="2" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="2" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="2" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="2" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -46,8 +58,8 @@
                             <span class="level-desc">Primes + Recip.</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="3" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="3" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="3" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="3" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -60,8 +72,8 @@
                             <span class="level-desc">Complexity 0-50</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="4" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="4" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="4" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="4" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -70,8 +82,8 @@
                             <span class="level-desc">Complexity 0-100</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="5" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="5" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="5" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="5" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -84,8 +96,8 @@
                             <span class="level-desc">Complexity 100-150</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="6" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="6" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="6" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="6" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -94,8 +106,8 @@
                             <span class="level-desc">Complexity 0-150</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="7" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="7" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="7" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="7" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -108,8 +120,8 @@
                             <span class="level-desc">Complexity 150-200</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="8" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="8" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="8" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="8" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -118,8 +130,8 @@
                             <span class="level-desc">Complexity 0-200</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="9" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="9" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="9" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="9" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -132,8 +144,8 @@
                             <span class="level-desc">Complexity 200-250</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="10" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="10" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="10" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="10" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -142,8 +154,8 @@
                             <span class="level-desc">Complexity 0-250</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="11" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="11" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="11" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="11" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -156,8 +168,8 @@
                             <span class="level-desc">Complexity 250-300</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="12" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="12" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="12" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="12" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -166,8 +178,8 @@
                             <span class="level-desc">Complexity 0-300</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="13" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="13" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="13" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="13" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -180,8 +192,8 @@
                             <span class="level-desc">Complexity 300-350</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="14" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="14" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="14" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="14" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -190,8 +202,8 @@
                             <span class="level-desc">Complexity 0-350</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="15" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="15" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="15" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="15" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -204,8 +216,8 @@
                             <span class="level-desc">Complexity 350-400</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="16" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="16" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="16" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="16" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -214,8 +226,8 @@
                             <span class="level-desc">Complexity 0-400</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="17" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="17" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="17" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="17" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -228,8 +240,8 @@
                             <span class="level-desc">Complexity 400-450</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="18" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="18" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="18" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="18" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -238,8 +250,8 @@
                             <span class="level-desc">Complexity 0-450</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="19" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="19" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="19" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="19" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -252,8 +264,8 @@
                             <span class="level-desc">Complexity 450-500</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="20" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="20" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="20" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="20" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -262,8 +274,8 @@
                             <span class="level-desc">Complexity 0-500</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="21" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="21" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="21" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="21" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -276,8 +288,8 @@
                             <span class="level-desc">Complexity 500-550</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="22" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="22" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="22" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="22" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -286,8 +298,8 @@
                             <span class="level-desc">Complexity 0-550</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="23" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="23" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="23" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="23" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -300,8 +312,8 @@
                             <span class="level-desc">Complexity 550-600</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="24" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="24" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="24" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="24" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
@@ -310,8 +322,8 @@
                             <span class="level-desc">Complexity 0-600</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="25" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="25" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="25" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="25" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -321,21 +333,21 @@
                     <div class="level-card">
                         <div class="level-info">
                             <span class="level-num">13a</span>
-                            <span class="level-desc">Complexity 600-700</span>
+                            <span class="level-desc">Complexity 600-650</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="26" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="26" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="26" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="26" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
                         <div class="level-info">
                             <span class="level-num">13b</span>
-                            <span class="level-desc">Complexity 0-700</span>
+                            <span class="level-desc">Complexity 0-650</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="27" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="27" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="27" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="27" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
@@ -345,21 +357,165 @@
                     <div class="level-card">
                         <div class="level-info">
                             <span class="level-num">14a</span>
-                            <span class="level-desc">Complexity 700-1000</span>
+                            <span class="level-desc">Complexity 650-700</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="28" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="28" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="28" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="28" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                     <div class="level-card">
                         <div class="level-info">
                             <span class="level-num">14b</span>
+                            <span class="level-desc">Complexity 0-700</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="29" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="29" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-pair">
+                    <h3 class="pair-title">Level 15</h3>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">15a</span>
+                            <span class="level-desc">Complexity 700-750</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="30" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="30" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">15b</span>
+                            <span class="level-desc">Complexity 0-750</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="31" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="31" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-pair">
+                    <h3 class="pair-title">Level 16</h3>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">16a</span>
+                            <span class="level-desc">Complexity 750-800</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="32" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="32" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">16b</span>
+                            <span class="level-desc">Complexity 0-800</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="33" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="33" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-pair">
+                    <h3 class="pair-title">Level 17</h3>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">17a</span>
+                            <span class="level-desc">Complexity 800-850</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="34" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="34" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">17b</span>
+                            <span class="level-desc">Complexity 0-850</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="35" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="35" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-pair">
+                    <h3 class="pair-title">Level 18</h3>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">18a</span>
+                            <span class="level-desc">Complexity 850-900</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="36" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="36" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">18b</span>
+                            <span class="level-desc">Complexity 0-900</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="37" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="37" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-pair">
+                    <h3 class="pair-title">Level 19</h3>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">19a</span>
+                            <span class="level-desc">Complexity 900-950</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="38" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="38" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">19b</span>
+                            <span class="level-desc">Complexity 0-950</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="39" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="39" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="level-pair">
+                    <h3 class="pair-title">Level 20</h3>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">20a</span>
+                            <span class="level-desc">Complexity 950-1000</span>
+                        </div>
+                        <div class="mode-buttons">
+                            <button class="mode-btn" data-level="40" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="40" data-mode="reverse">Cents</button>
+                        </div>
+                    </div>
+                    <div class="level-card">
+                        <div class="level-info">
+                            <span class="level-num">20b</span>
                             <span class="level-desc">Complexity 0-1000</span>
                         </div>
                         <div class="mode-buttons">
-                            <button class="mode-btn" data-level="29" data-mode="normal">Normal</button>
-                            <button class="mode-btn" data-level="29" data-mode="reverse">Reverse</button>
+                            <button class="mode-btn" data-level="41" data-mode="normal">Fractions</button>
+                            <button class="mode-btn" data-level="41" data-mode="reverse">Cents</button>
                         </div>
                     </div>
                 </div>
