@@ -15,16 +15,35 @@
 
         <!-- Level Selection Panel -->
         <div id="level-select-panel" class="panel">
-            <h2>Select Level</h2>
+            <div class="panel-header">
+                <h2>Select Level</h2>
+                <button id="help-btn" class="help-btn" title="Help">?</button>
+            </div>
 
             <!-- Quick Settings -->
             <div class="quick-settings">
+                <div class="mode-selector-row">
+                    <div class="display-mode-selector">
+                        <label class="mode-selector-label">Display interval as:</label>
+                        <div class="mode-selector-buttons">
+                            <button class="mode-selector-btn active" data-mode="fractions">Fractions</button>
+                            <button class="mode-selector-btn" data-mode="cents">Cents</button>
+                        </div>
+                    </div>
+                    <div class="display-mode-selector">
+                        <label class="mode-selector-label">Enter interval as:</label>
+                        <div class="mode-selector-buttons">
+                            <button class="mode-selector-btn-readonly" data-mode="fractions">Fractions</button>
+                            <button class="mode-selector-btn-readonly active" data-mode="cents">Cents</button>
+                        </div>
+                    </div>
+                </div>
                 <label class="quick-setting-item">
                     <input type="checkbox" id="repeat-missed-quick" checked>
                     Repeat missed intervals (error &gt; <input type="number" id="repeat-threshold-quick" min="0" max="100" step="0.1" value="0.6" class="small-number-input">¢)
                 </label>
                 <label class="quick-setting-item">
-                    <input type="checkbox" id="repeat-slow-quick">
+                    <input type="checkbox" id="repeat-slow-quick" checked>
                     Repeat questions that take longer than <input type="number" id="repeat-slow-threshold-quick" min="0" max="60" step="0.5" value="5" class="small-number-input">s
                 </label>
                 <label class="quick-setting-item">
@@ -36,492 +55,328 @@
                         <div class="levels-grid">
                 <div class="level-pair">
                     <h3 class="pair-title">Level 1</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="1">
                         <div class="level-info">
                             <span class="level-num">1a</span>
                             <span class="level-desc">19-limit primes</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="1" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="1" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="2">
                         <div class="level-info">
                             <span class="level-num">1b</span>
                             <span class="level-desc">Reciprocals only</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="2" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="2" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="3">
                         <div class="level-info">
                             <span class="level-num">1c</span>
                             <span class="level-desc">Primes + Recip.</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="3" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="3" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 2</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="4">
                         <div class="level-info">
                             <span class="level-num">2a</span>
                             <span class="level-desc">Complexity 0-50</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="4" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="4" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="5">
                         <div class="level-info">
                             <span class="level-num">2b</span>
                             <span class="level-desc">Complexity 0-100</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="5" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="5" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 3</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="6">
                         <div class="level-info">
                             <span class="level-num">3a</span>
                             <span class="level-desc">Complexity 100-150</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="6" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="6" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="7">
                         <div class="level-info">
                             <span class="level-num">3b</span>
                             <span class="level-desc">Complexity 0-150</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="7" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="7" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 4</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="8">
                         <div class="level-info">
                             <span class="level-num">4a</span>
                             <span class="level-desc">Complexity 150-200</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="8" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="8" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="9">
                         <div class="level-info">
                             <span class="level-num">4b</span>
                             <span class="level-desc">Complexity 0-200</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="9" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="9" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 5</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="10">
                         <div class="level-info">
                             <span class="level-num">5a</span>
                             <span class="level-desc">Complexity 200-250</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="10" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="10" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="11">
                         <div class="level-info">
                             <span class="level-num">5b</span>
                             <span class="level-desc">Complexity 0-250</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="11" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="11" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 6</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="12">
                         <div class="level-info">
                             <span class="level-num">6a</span>
                             <span class="level-desc">Complexity 250-300</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="12" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="12" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="13">
                         <div class="level-info">
                             <span class="level-num">6b</span>
                             <span class="level-desc">Complexity 0-300</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="13" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="13" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 7</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="14">
                         <div class="level-info">
                             <span class="level-num">7a</span>
                             <span class="level-desc">Complexity 300-350</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="14" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="14" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="15">
                         <div class="level-info">
                             <span class="level-num">7b</span>
                             <span class="level-desc">Complexity 0-350</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="15" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="15" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 8</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="16">
                         <div class="level-info">
                             <span class="level-num">8a</span>
                             <span class="level-desc">Complexity 350-400</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="16" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="16" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="17">
                         <div class="level-info">
                             <span class="level-num">8b</span>
                             <span class="level-desc">Complexity 0-400</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="17" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="17" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 9</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="18">
                         <div class="level-info">
                             <span class="level-num">9a</span>
                             <span class="level-desc">Complexity 400-450</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="18" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="18" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="19">
                         <div class="level-info">
                             <span class="level-num">9b</span>
                             <span class="level-desc">Complexity 0-450</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="19" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="19" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 10</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="20">
                         <div class="level-info">
                             <span class="level-num">10a</span>
                             <span class="level-desc">Complexity 450-500</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="20" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="20" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="21">
                         <div class="level-info">
                             <span class="level-num">10b</span>
                             <span class="level-desc">Complexity 0-500</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="21" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="21" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 11</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="22">
                         <div class="level-info">
                             <span class="level-num">11a</span>
                             <span class="level-desc">Complexity 500-550</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="22" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="22" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="23">
                         <div class="level-info">
                             <span class="level-num">11b</span>
                             <span class="level-desc">Complexity 0-550</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="23" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="23" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 12</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="24">
                         <div class="level-info">
                             <span class="level-num">12a</span>
                             <span class="level-desc">Complexity 550-600</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="24" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="24" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="25">
                         <div class="level-info">
                             <span class="level-num">12b</span>
                             <span class="level-desc">Complexity 0-600</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="25" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="25" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 13</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="26">
                         <div class="level-info">
                             <span class="level-num">13a</span>
                             <span class="level-desc">Complexity 600-650</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="26" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="26" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="27">
                         <div class="level-info">
                             <span class="level-num">13b</span>
                             <span class="level-desc">Complexity 0-650</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="27" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="27" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 14</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="28">
                         <div class="level-info">
                             <span class="level-num">14a</span>
                             <span class="level-desc">Complexity 650-700</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="28" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="28" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="29">
                         <div class="level-info">
                             <span class="level-num">14b</span>
                             <span class="level-desc">Complexity 0-700</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="29" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="29" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 15</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="30">
                         <div class="level-info">
                             <span class="level-num">15a</span>
                             <span class="level-desc">Complexity 700-750</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="30" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="30" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="31">
                         <div class="level-info">
                             <span class="level-num">15b</span>
                             <span class="level-desc">Complexity 0-750</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="31" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="31" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 16</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="32">
                         <div class="level-info">
                             <span class="level-num">16a</span>
                             <span class="level-desc">Complexity 750-800</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="32" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="32" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="33">
                         <div class="level-info">
                             <span class="level-num">16b</span>
                             <span class="level-desc">Complexity 0-800</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="33" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="33" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 17</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="34">
                         <div class="level-info">
                             <span class="level-num">17a</span>
                             <span class="level-desc">Complexity 800-850</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="34" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="34" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="35">
                         <div class="level-info">
                             <span class="level-num">17b</span>
                             <span class="level-desc">Complexity 0-850</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="35" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="35" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 18</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="36">
                         <div class="level-info">
                             <span class="level-num">18a</span>
                             <span class="level-desc">Complexity 850-900</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="36" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="36" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="37">
                         <div class="level-info">
                             <span class="level-num">18b</span>
                             <span class="level-desc">Complexity 0-900</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="37" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="37" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 19</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="38">
                         <div class="level-info">
                             <span class="level-num">19a</span>
                             <span class="level-desc">Complexity 900-950</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="38" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="38" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="39">
                         <div class="level-info">
                             <span class="level-num">19b</span>
                             <span class="level-desc">Complexity 0-950</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="39" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="39" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="level-pair">
                     <h3 class="pair-title">Level 20</h3>
-                    <div class="level-card">
+                    <button class="level-card level-btn" data-level="40">
                         <div class="level-info">
                             <span class="level-num">20a</span>
                             <span class="level-desc">Complexity 950-1000</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="40" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="40" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
-                    <div class="level-card">
+                    </button>
+                    <button class="level-card level-btn" data-level="41">
                         <div class="level-info">
                             <span class="level-num">20b</span>
                             <span class="level-desc">Complexity 0-1000</span>
                         </div>
-                        <div class="mode-buttons">
-                            <button class="mode-btn" data-level="41" data-mode="normal">Fractions</button>
-                            <button class="mode-btn" data-level="41" data-mode="reverse">Cents</button>
-                        </div>
-                    </div>
+                    </button>
                 </div>
 
             </div>
@@ -530,6 +385,66 @@
 
             <div class="custom-mode-section">
                 <button id="custom-mode-btn">Custom Mode</button>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <div id="help-modal" class="help-modal" style="display: none;">
+            <div class="help-modal-content">
+                <div class="help-modal-header">
+                    <h3>How to Use This Trainer</h3>
+                    <button id="close-help-btn" class="close-help-btn">&times;</button>
+                </div>
+                <div class="help-modal-body">
+                    <div class="help-section">
+                        <h4>Keyboard Shortcuts</h4>
+                        <ul>
+                            <li><strong>Enter:</strong> Submit answer</li>
+                            <li><strong>R:</strong> Replay interval audio</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>Calculating Composite Intervals</h4>
+                        <p><strong>Method 1: Subtraction</strong></p>
+                        <ul>
+                            <li>9/7 = interval for 9 (204¢) - interval for 7 (969¢) = -765¢ mod 1200 = 435¢</li>
+                        </ul>
+                        <p><strong>Method 2: Using Reciprocals</strong></p>
+                        <ul>
+                            <li>9/7 = 9/8 × 8/7</li>
+                            <li>9/8 = 204¢ and 8/7 = 231¢</li>
+                            <li>Therefore: 204¢ + 231¢ = 435¢</li>
+                        </ul>
+                        <p><strong>General Strategy:</strong></p>
+                        <ul>
+                            <li>You can either subtract the denominator's cent value from the numerator's cent value, OR add the numerator to the denominator's reciprocal value</li>
+                            <li>It varies on which one will be easier per problem</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>What is Complexity?</h4>
+                        <ul>
+                            <li><strong>Complexity = numerator × denominator</strong></li>
+                            <li>Example: the interval 3/2 has complexity 3 × 2 = 6</li>
+                            <li>Higher complexity generally means more difficult intervals to identify</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>Level Progression</h4>
+                        <ul>
+                            <li><strong>Part A</strong> (e.g., "3a"): Focused range of complexity</li>
+                            <li><strong>Part B</strong> (e.g., "3b"): Cumulative from 0 to that complexity</li>
+                        </ul>
+                        <p><strong>Recommended mastery criteria before advancing:</strong></p>
+                        <ul>
+                            <li>Average error &lt; 0.3¢</li>
+                            <li>Average answer time &lt; 5 seconds</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 

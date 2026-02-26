@@ -368,12 +368,10 @@ function countIntervalsForLevel(level) {
 }
 
 // Add hover tooltips to show interval count
-document.querySelectorAll('.level-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
-        // Get the actual level ID from the button's data-level attribute
-        const modeBtn = this.querySelector('.mode-btn');
-        if (!modeBtn) return;
-        const level = parseInt(modeBtn.dataset.level);
+document.querySelectorAll('.level-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', function() {
+        // Get the level ID from the button's data-level attribute
+        const level = parseInt(this.dataset.level);
         const count = countIntervalsForLevel(level);
 
         // Create or update tooltip
@@ -387,7 +385,7 @@ document.querySelectorAll('.level-card').forEach(card => {
         tooltip.style.display = 'block';
     });
 
-    card.addEventListener('mouseleave', function() {
+    btn.addEventListener('mouseleave', function() {
         const tooltip = this.querySelector('.interval-count-tooltip');
         if (tooltip) {
             tooltip.style.display = 'none';
@@ -395,11 +393,39 @@ document.querySelectorAll('.level-card').forEach(card => {
     });
 });
 
-// Event listeners for mode buttons
-document.querySelectorAll('.mode-btn').forEach(btn => {
+// Event listeners for mode selector buttons
+const modeSelectorBtns = document.querySelectorAll('.mode-selector-btn');
+const readonlyBtns = document.querySelectorAll('.mode-selector-btn-readonly');
+
+modeSelectorBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Update active state for clickable buttons
+        modeSelectorBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Update readonly buttons to show opposite mode
+        const selectedMode = btn.dataset.mode;
+        const oppositeMode = selectedMode === 'fractions' ? 'cents' : 'fractions';
+
+        readonlyBtns.forEach(rb => {
+            if (rb.dataset.mode === oppositeMode) {
+                rb.classList.add('active');
+            } else {
+                rb.classList.remove('active');
+            }
+        });
+    });
+});
+
+// Event listeners for level buttons
+document.querySelectorAll('.level-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const level = parseInt(btn.dataset.level);
-        const reverseMode = btn.dataset.mode === 'reverse';
+
+        // Get selected display mode
+        const activeMode = document.querySelector('.mode-selector-btn.active');
+        const reverseMode = activeMode && activeMode.dataset.mode === 'cents';
+
         initAudio();
 
         // Apply quick settings before configuring level
@@ -1239,6 +1265,45 @@ submitBtn.addEventListener('click', handleSubmitOrNext);
 answerInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         handleSubmitOrNext();
+    }
+});
+
+// Global keyboard shortcut for replay
+document.addEventListener('keypress', (e) => {
+    if (e.key === 'r' || e.key === 'R') {
+        // Only replay if in game and not typing in input
+        if (gameActive && document.activeElement !== answerInput) {
+            if (currentAnswer !== null) {
+                playIntervalAudio(currentAnswer);
+            }
+        }
+    }
+});
+
+// Help modal functionality
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
+const closeHelpBtn = document.getElementById('close-help-btn');
+
+helpBtn.addEventListener('click', () => {
+    helpModal.style.display = 'flex';
+});
+
+closeHelpBtn.addEventListener('click', () => {
+    helpModal.style.display = 'none';
+});
+
+// Close modal when clicking outside
+helpModal.addEventListener('click', (e) => {
+    if (e.target === helpModal) {
+        helpModal.style.display = 'none';
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && helpModal.style.display === 'flex') {
+        helpModal.style.display = 'none';
     }
 });
 
