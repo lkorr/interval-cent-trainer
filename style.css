@@ -473,3 +473,99 @@ textarea:focus {
         flex-direction: column;
     }
 }
+
+/* Level Selection Styles */
+.level-section {
+    margin-bottom: 40px;
+}
+
+.level-section h3 {
+    color: #667eea;
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 10px;
+}
+
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.level-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 100px;
+}
+
+.level-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.level-btn:active {
+    transform: translateY(0);
+}
+
+.level-number {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.level-desc {
+    font-size: 0.9em;
+    text-align: center;
+    opacity: 0.95;
+}
+
+.custom-mode-section {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #e0e0e0;
+}
+
+#custom-mode-btn {
+    font-size: 1.2em;
+    padding: 15px 40px;
+    background: #6c757d;
+}
+
+#custom-mode-btn:hover {
+    background: #5a6268;
+}
+
+#back-to-levels-btn {
+    margin-bottom: 20px;
+}
+
+/* Mobile adjustments for level selection */
+@media (max-width: 600px) {
+    .level-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .level-btn {
+        min-height: 80px;
+    }
+
+    .level-number {
+        font-size: 1.1em;
+    }
+
+    .level-desc {
+        font-size: 0.85em;
+    }
+}

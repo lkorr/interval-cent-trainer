@@ -26,8 +26,11 @@ let jiLimit = 20;
 let edoList = [];
 
 // DOM elements
+const levelSelectPanel = document.getElementById('level-select-panel');
 const settingsPanel = document.getElementById('settings-panel');
 const gamePanel = document.getElementById('game-panel');
+const customModeBtn = document.getElementById('custom-mode-btn');
+const backToLevelsBtn = document.getElementById('back-to-levels-btn');
 const startBtn = document.getElementById('start-btn');
 const submitBtn = document.getElementById('submit-btn');
 const skipBtn = document.getElementById('skip-btn');
@@ -112,6 +115,89 @@ function initAudio() {
         });
     }
 }
+
+// Navigation functions
+function showLevelSelect() {
+    levelSelectPanel.style.display = 'block';
+    settingsPanel.style.display = 'none';
+    gamePanel.style.display = 'none';
+}
+
+function showCustomMode() {
+    levelSelectPanel.style.display = 'none';
+    settingsPanel.style.display = 'block';
+    gamePanel.style.display = 'none';
+}
+
+// Level configuration
+function getLevelConfig(level) {
+    const configs = {
+        // Limit 20
+        1: { mode: 'primes-2x', limit: 20, primeLimit: 17, complexityMin: 0, complexityMax: 1000000 },
+        2: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 100 },
+        3: { mode: 'simple-limit', limit: 20, complexityMin: 100, complexityMax: 150 },
+        4: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 150 },
+        5: { mode: 'simple-limit', limit: 20, complexityMin: 150, complexityMax: 200 },
+        6: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 200 },
+        7: { mode: 'simple-limit', limit: 20, complexityMin: 200, complexityMax: 300 },
+        8: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 300 },
+        9: { mode: 'simple-limit', limit: 20, complexityMin: 300, complexityMax: 400 },
+        10: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 400 },
+        11: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 1000000 },
+        // Limit 31
+        12: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000 },
+        13: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 100 },
+        14: { mode: 'simple-limit', limit: 31, complexityMin: 100, complexityMax: 150 },
+        15: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 150 },
+        16: { mode: 'simple-limit', limit: 31, complexityMin: 150, complexityMax: 200 },
+        17: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 200 },
+        18: { mode: 'simple-limit', limit: 31, complexityMin: 200, complexityMax: 300 },
+        19: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 300 },
+        20: { mode: 'simple-limit', limit: 31, complexityMin: 300, complexityMax: 400 },
+        21: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 400 },
+        22: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 1000000 }
+    };
+    return configs[level];
+}
+
+function configureLevel(level) {
+    const config = getLevelConfig(level);
+    if (!config) return;
+
+    // Set generator mode
+    const modeRadio = document.querySelector(`input[name="generator-mode"][value="${config.mode}"]`);
+    if (modeRadio) modeRadio.checked = true;
+
+    // Set limits
+    jiLimitInput.value = config.limit;
+    if (config.primeLimit) {
+        primeLimitInput.value = config.primeLimit;
+    }
+
+    // Set complexity filter
+    complexityMinInput.value = config.complexityMin;
+    complexityMaxInput.value = config.complexityMax;
+
+    // Generate intervals based on configuration
+    generateIntervals();
+
+    // Apply complexity filter
+    filterComplexIntervals();
+}
+
+// Event listeners for navigation
+customModeBtn.addEventListener('click', showCustomMode);
+backToLevelsBtn.addEventListener('click', showLevelSelect);
+
+// Event listeners for level buttons
+document.querySelectorAll('.level-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const level = parseInt(btn.dataset.level);
+        initAudio();
+        configureLevel(level);
+        startGame();
+    });
+});
 
 // Play interval audio
 function playIntervalAudio(cents) {
@@ -1070,6 +1156,7 @@ function startGame() {
     timerInterval = setInterval(updateTimer, 100);
 
     // Switch panels
+    levelSelectPanel.style.display = 'none';
     settingsPanel.style.display = 'none';
     gamePanel.style.display = 'block';
 
@@ -1543,8 +1630,8 @@ function endGame() {
     document.querySelector('.continuum-container').style.display = 'none';
     skipBtn.style.display = 'none';
 
-    // Change end button to "Return to Settings"
-    endBtn.textContent = 'Return to Settings';
+    // Change end button to "Return to Level Select"
+    endBtn.textContent = 'Return to Level Select';
     endBtn.onclick = () => {
         // Reset display
         document.querySelector('.interval-display').style.display = '';
@@ -1554,9 +1641,9 @@ function endGame() {
         endBtn.textContent = 'End Game';
         endBtn.onclick = endGame;
 
-        // Return to settings
+        // Return to level select
         gamePanel.style.display = 'none';
-        settingsPanel.style.display = 'block';
+        showLevelSelect();
     };
 
     // Add "Retry Missed Intervals" button if there are any
@@ -1591,7 +1678,7 @@ function loadThresholdToBank() {
     // Clear the custom intervals textarea and fill with selected intervals
     customIntervalsInput.value = allIntervals.join('\n');
 
-    // Return to settings panel
+    // Reset display elements
     document.querySelector('.interval-display').style.display = '';
     document.querySelector('.input-section').style.display = '';
     document.querySelector('.continuum-container').style.display = '';
@@ -1600,10 +1687,11 @@ function loadThresholdToBank() {
     endBtn.textContent = 'End Game';
     endBtn.onclick = endGame;
 
+    // Show custom mode
     gamePanel.style.display = 'none';
-    settingsPanel.style.display = 'block';
+    showCustomMode();
 
-    alert(`Loaded ${allIntervals.length} intervals with error > ${threshold}¢ to the interval bank.`);
+    alert(`Loaded ${allIntervals.length} intervals with error > ${threshold}¢ to the interval bank in Custom Mode.`);
 }
 
 function loadTimeThresholdToBank() {
@@ -1626,7 +1714,7 @@ function loadTimeThresholdToBank() {
     // Clear the custom intervals textarea and fill with selected intervals
     customIntervalsInput.value = allIntervals.join('\n');
 
-    // Return to settings panel
+    // Reset display elements
     document.querySelector('.interval-display').style.display = '';
     document.querySelector('.input-section').style.display = '';
     document.querySelector('.continuum-container').style.display = '';
@@ -1635,10 +1723,11 @@ function loadTimeThresholdToBank() {
     endBtn.textContent = 'End Game';
     endBtn.onclick = endGame;
 
+    // Show custom mode
     gamePanel.style.display = 'none';
-    settingsPanel.style.display = 'block';
+    showCustomMode();
 
-    alert(`Loaded ${allIntervals.length} intervals that took longer than ${threshold}s to the interval bank.`);
+    alert(`Loaded ${allIntervals.length} intervals that took longer than ${threshold}s to the interval bank in Custom Mode.`);
 }
 
 function loadMissedToBank() {
@@ -1648,7 +1737,7 @@ function loadMissedToBank() {
     // Clear the custom intervals textarea and fill with missed intervals only
     customIntervalsInput.value = missedDisplays.join('\n');
 
-    // Return to settings panel
+    // Reset display elements
     document.querySelector('.interval-display').style.display = '';
     document.querySelector('.input-section').style.display = '';
     document.querySelector('.continuum-container').style.display = '';
@@ -1657,10 +1746,11 @@ function loadMissedToBank() {
     endBtn.textContent = 'End Game';
     endBtn.onclick = endGame;
 
+    // Show custom mode
     gamePanel.style.display = 'none';
-    settingsPanel.style.display = 'block';
+    showCustomMode();
 
-    alert(`Loaded ${missedIntervals.length} missed intervals to the interval bank. You can now start a new game with only these intervals.`);
+    alert(`Loaded ${missedIntervals.length} missed intervals to the interval bank in Custom Mode. You can now start a new game with only these intervals.`);
 }
 
 function retryMissedIntervals() {
