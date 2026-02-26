@@ -129,19 +129,37 @@ function showCustomMode() {
     gamePanel.style.display = 'none';
 }
 
+// Helper function to check if a number is prime
+function isPrime(num) {
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+    if (num % 2 === 0 || num % 3 === 0) return false;
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
+    }
+    return true;
+}
+
+// Helper function to check if a number is a power of 2
+function isPowerOf2(num) {
+    return num > 0 && (num & (num - 1)) === 0;
+}
+
 // Level configuration
 function getLevelConfig(level) {
     const configs = {
-        1: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000 },
-        2: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 100 },
-        3: { mode: 'simple-limit', limit: 31, complexityMin: 100, complexityMax: 150 },
-        4: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 150 },
-        5: { mode: 'simple-limit', limit: 31, complexityMin: 150, complexityMax: 200 },
-        6: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 200 },
-        7: { mode: 'simple-limit', limit: 31, complexityMin: 200, complexityMax: 300 },
-        8: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 300 },
-        9: { mode: 'simple-limit', limit: 31, complexityMin: 300, complexityMax: 400 },
-        10: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 400 }
+        1: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000, filterType: 'primes-only' },
+        2: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000, filterType: 'reciprocals-only' },
+        3: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000 },
+        4: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 100 },
+        5: { mode: 'simple-limit', limit: 31, complexityMin: 100, complexityMax: 150 },
+        6: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 150 },
+        7: { mode: 'simple-limit', limit: 31, complexityMin: 150, complexityMax: 200 },
+        8: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 200 },
+        9: { mode: 'simple-limit', limit: 31, complexityMin: 200, complexityMax: 300 },
+        10: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 300 },
+        11: { mode: 'simple-limit', limit: 31, complexityMin: 300, complexityMax: 400 },
+        12: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 400 }
     };
     return configs[level];
 }
@@ -172,6 +190,87 @@ function configureLevel(level, reverseMode) {
 
     // Apply complexity filter
     filterComplexIntervals();
+
+    // Apply special filters for levels 1 and 2
+    if (config.filterType === 'primes-only') {
+        filterPrimesOnly();
+    } else if (config.filterType === 'reciprocals-only') {
+        filterReciprocalsOnly();
+    }
+}
+
+function filterPrimesOnly() {
+    const customText = customIntervalsInput.value.trim();
+    if (!customText) return;
+
+    const lines = customText.split('\n');
+    const filtered = [];
+
+    for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+
+        // Parse JI intervals (e.g., "3/2")
+        const jiMatch = line.match(/^(\d+)\/(\d+)$/);
+        if (jiMatch) {
+            const num = parseInt(jiMatch[1]);
+            const den = parseInt(jiMatch[2]);
+
+            // Keep only if numerator is prime and denominator is power of 2
+            if (isPrime(num) && isPowerOf2(den)) {
+                filtered.push(line);
+            }
+            continue;
+        }
+
+        // Keep EDO intervals unchanged
+        const edoMatch = line.match(/^(-?\d+)\\(\d+)$/);
+        if (edoMatch) {
+            filtered.push(line);
+            continue;
+        }
+
+        filtered.push(line);
+    }
+
+    customIntervalsInput.value = filtered.join('\n');
+}
+
+function filterReciprocalsOnly() {
+    const customText = customIntervalsInput.value.trim();
+    if (!customText) return;
+
+    const lines = customText.split('\n');
+    const filtered = [];
+
+    for (let line of lines) {
+        line = line.trim();
+        if (!line) continue;
+
+        // Parse JI intervals (e.g., "3/2")
+        const jiMatch = line.match(/^(\d+)\/(\d+)$/);
+        if (jiMatch) {
+            const num = parseInt(jiMatch[1]);
+            const den = parseInt(jiMatch[2]);
+
+            // Keep only if numerator is power of 2 and denominator is prime
+            if (isPowerOf2(num) && isPrime(den)) {
+                filtered.push(line);
+            }
+            continue;
+        }
+
+        // Keep EDO intervals unchanged
+        const edoMatch = line.match(/^(-?\d+)\\(\d+)$/);
+        if (edoMatch) {
+            filtered.push(line);
+            continue;
+        }
+
+        filtered.push(line);
+    }
+
+    customIntervalsInput.value = filtered.join('\n');
 }
 
 // Event listeners for navigation
