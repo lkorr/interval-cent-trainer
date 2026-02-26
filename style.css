@@ -500,6 +500,7 @@ textarea:focus {
 }
 
 .level-card {
+    position: relative;
     padding: 8px;
     margin-bottom: 6px;
     background: #fff;
@@ -513,6 +514,32 @@ textarea:focus {
 
 .level-card:hover {
     border-color: #adb5bd;
+}
+
+.interval-count-tooltip {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75em;
+    white-space: nowrap;
+    z-index: 10;
+    display: none;
+    pointer-events: none;
+}
+
+.interval-count-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: #333;
 }
 
 .level-info {

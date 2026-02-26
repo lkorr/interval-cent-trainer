@@ -217,8 +217,9 @@ function filterPrimesOnly() {
             const num = parseInt(jiMatch[1]);
             const den = parseInt(jiMatch[2]);
 
-            // Keep only if numerator is prime and denominator is power of 2
-            if (isPrime(num) && isPowerOf2(den)) {
+            // Keep only if numerator is prime (or prime power) and denominator is power of 2
+            // Check if numerator is a power of a single prime
+            if (isPowerOfSinglePrime(num) && isPowerOf2(den) && !isPowerOf2(num)) {
                 filtered.push(line);
             }
             continue;
@@ -235,6 +236,25 @@ function filterPrimesOnly() {
     }
 
     customIntervalsInput.value = filtered.join('\n');
+}
+
+// Helper function to check if a number is a power of a single prime
+function isPowerOfSinglePrime(num) {
+    if (num <= 1) return false;
+
+    // Find the smallest prime factor
+    for (let i = 2; i * i <= num; i++) {
+        if (num % i === 0) {
+            // i is a factor, check if num is a power of i
+            let temp = num;
+            while (temp % i === 0) {
+                temp /= i;
+            }
+            return temp === 1;
+        }
+    }
+    // If no factor found, num is prime
+    return true;
 }
 
 function filterReciprocalsOnly() {
@@ -254,8 +274,8 @@ function filterReciprocalsOnly() {
             const num = parseInt(jiMatch[1]);
             const den = parseInt(jiMatch[2]);
 
-            // Keep only if numerator is power of 2 and denominator is prime
-            if (isPowerOf2(num) && isPrime(den)) {
+            // Keep only if numerator is power of 2 and denominator is prime (or prime power)
+            if (isPowerOf2(num) && isPowerOfSinglePrime(den) && !isPowerOf2(den)) {
                 filtered.push(line);
             }
             continue;
@@ -277,6 +297,71 @@ function filterReciprocalsOnly() {
 // Event listeners for navigation
 customModeBtn.addEventListener('click', showCustomMode);
 backToLevelsBtn.addEventListener('click', showLevelSelect);
+
+// Function to count intervals for a level
+function countIntervalsForLevel(level) {
+    const config = getLevelConfig(level);
+    if (!config) return 0;
+
+    // Save current state
+    const currentIntervals = customIntervalsInput.value;
+
+    // Generate intervals for this level
+    const modeRadio = document.querySelector(`input[name="generator-mode"][value="${config.mode}"]`);
+    if (modeRadio) modeRadio.checked = true;
+
+    jiLimitInput.value = config.limit;
+    if (config.primeLimit) {
+        primeLimitInput.value = config.primeLimit;
+    }
+
+    complexityMinInput.value = config.complexityMin;
+    complexityMaxInput.value = config.complexityMax;
+
+    generateIntervals();
+    filterComplexIntervals();
+
+    if (config.filterType === 'primes-only') {
+        filterPrimesOnly();
+    } else if (config.filterType === 'reciprocals-only') {
+        filterReciprocalsOnly();
+    }
+
+    // Count the intervals
+    const text = customIntervalsInput.value.trim();
+    const count = text ? text.split('\n').filter(line => line.trim()).length : 0;
+
+    // Restore original state
+    customIntervalsInput.value = currentIntervals;
+
+    return count;
+}
+
+// Add hover tooltips to show interval count
+document.querySelectorAll('.level-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        const levelNum = this.querySelector('.level-num').textContent;
+        const level = parseInt(levelNum);
+        const count = countIntervalsForLevel(level);
+
+        // Create or update tooltip
+        let tooltip = this.querySelector('.interval-count-tooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'interval-count-tooltip';
+            this.appendChild(tooltip);
+        }
+        tooltip.textContent = `${count} questions`;
+        tooltip.style.display = 'block';
+    });
+
+    card.addEventListener('mouseleave', function() {
+        const tooltip = this.querySelector('.interval-count-tooltip');
+        if (tooltip) {
+            tooltip.style.display = 'none';
+        }
+    });
+});
 
 // Event listeners for mode buttons
 document.querySelectorAll('.mode-btn').forEach(btn => {
