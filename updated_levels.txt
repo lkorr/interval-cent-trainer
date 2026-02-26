@@ -1,23 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Interval Cent Trainer</title>
-    <link rel="stylesheet" href="style.css?v=4">
-</head>
-<body>
-    <div class="container">
-        <h1>Interval Cent Trainer</h1>
+// Level configuration
+function getLevelConfig(level) {
+    const configs = {
+        1: { mode: 'primes-2x', limit: 40, primeLimit: 40, complexityMin: 0, complexityMax: 1000000, filterType: 'primes-only' },
+        2: { mode: 'primes-2x', limit: 40, primeLimit: 40, complexityMin: 0, complexityMax: 1000000, filterType: 'reciprocals-only' },
+        3: { mode: 'primes-2x', limit: 40, primeLimit: 40, complexityMin: 0, complexityMax: 1000000 },
+        4: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 50 },
+        5: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 100 },
+        6: { mode: 'simple-limit', limit: 40, complexityMin: 100, complexityMax: 150 },
+        7: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 150 },
+        8: { mode: 'simple-limit', limit: 40, complexityMin: 150, complexityMax: 200 },
+        9: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 200 },
+        10: { mode: 'simple-limit', limit: 40, complexityMin: 200, complexityMax: 250 },
+        11: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 250 },
+        12: { mode: 'simple-limit', limit: 40, complexityMin: 250, complexityMax: 300 },
+        13: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 300 },
+        14: { mode: 'simple-limit', limit: 40, complexityMin: 300, complexityMax: 350 },
+        15: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 350 },
+        16: { mode: 'simple-limit', limit: 40, complexityMin: 350, complexityMax: 400 },
+        17: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 400 },
+        18: { mode: 'simple-limit', limit: 40, complexityMin: 400, complexityMax: 450 },
+        19: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 450 },
+        20: { mode: 'simple-limit', limit: 40, complexityMin: 450, complexityMax: 500 },
+        21: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 500 },
+        22: { mode: 'simple-limit', limit: 40, complexityMin: 500, complexityMax: 550 },
+        23: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 550 },
+        24: { mode: 'simple-limit', limit: 40, complexityMin: 550, complexityMax: 600 },
+        25: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 600 },
+        26: { mode: 'simple-limit', limit: 40, complexityMin: 600, complexityMax: 700 },
+        27: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 700 },
+        28: { mode: 'simple-limit', limit: 40, complexityMin: 700, complexityMax: 1000 },
+        29: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 1000 }
+    };
+    return configs[level];
+}
 
-        <!-- Level Selection Panel -->
-        <div id="level-select-panel" class="panel">
-            <h2>Select Level</h2>
+// Total levels: 14
+// Total sublevels: 29
 
-                        <div class="levels-grid">
+<!-- HTML levels-grid -->
                 <div class="level-pair">
                     <h3 class="pair-title">Level 1</h3>
                     <div class="level-card">
@@ -364,295 +384,3 @@
                     </div>
                 </div>
 
-            </div>
-
-
-
-            <div class="custom-mode-section">
-                <button id="custom-mode-btn">Custom Mode</button>
-            </div>
-        </div>
-
-        <!-- Settings Panel (Custom Mode) -->
-        <div id="settings-panel" class="panel" style="display: none;">
-            <h2>Custom Mode Settings</h2>
-            <button id="back-to-levels-btn" class="btn-secondary">← Back to Levels</button>
-
-            <div class="settings-section">
-                <h3>Interval Generators</h3>
-
-                <div class="generator-container">
-                    <!-- Just Intonation Generator (Left) -->
-                    <div class="generator-box">
-                        <h4>Just Intonation</h4>
-
-                        <div id="ji-settings">
-                            <label>
-                                <input type="radio" name="generator-mode" value="primes-2x" checked>
-                                Primes/2^x and reciprocals
-                            </label>
-
-                            <label>
-                                <input type="radio" name="generator-mode" value="prime-ratios">
-                                Prime ratios
-                            </label>
-
-                            <label>
-                                <input type="radio" name="generator-mode" value="products">
-                                Products (n-limit)
-                            </label>
-
-                            <label class="inline-number">
-                                <input type="radio" name="generator-mode" value="simple-limit">
-                                All fractions, limit:
-                                <input type="number" id="ji-limit" min="2" max="100" value="20" class="small-number-input">
-                            </label>
-
-                            <label>
-                                Prime limit:
-                                <input type="number" id="prime-limit" min="3" max="97" value="13" step="2">
-                            </label>
-                            <label>
-                                Max exponent:
-                                <input type="number" id="prime-exponent" min="1" max="5" value="1">
-                            </label>
-
-                            <button id="generate-intervals-btn" class="btn-secondary" type="button">Generate JI</button>
-                        </div>
-                    </div>
-
-                    <!-- EDO Generator (Right) -->
-                    <div class="generator-box">
-                        <h4>Equal Divisions of the Octave (EDO)</h4>
-
-                        <div id="edo-settings">
-                            <label>
-                                EDOs (comma-separated, e.g., 17, 19, 22, 26, 31, ...):
-                                <input type="text" id="edo-list" placeholder="17,19,22,26,31" value="17">
-                            </label>
-
-                            <label>
-                                <input type="checkbox" id="edo-all-intervals" checked>
-                                All EDO intervals (exclude 0\n, n\n)
-                            </label>
-
-                            <label>
-                                Approximations of (comma-separated, e.g., "3/2,5/4"):
-                                <input type="text" id="edo-approximations" placeholder="3/2,5/4" value="3/2,5/4">
-                            </label>
-
-                            <label>
-                                <input type="checkbox" id="edo-use-approximations">
-                                Use approximations instead of all intervals
-                            </label>
-
-                            <button id="generate-edo-intervals-btn" class="btn-secondary" type="button">Generate EDO</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Custom Intervals Box (Full Width Below) -->
-                <div class="custom-intervals-box">
-                    <label>
-                        Custom intervals (one per line, e.g., "3/2", "5/4", "7/6", "1\12", "7\12"):
-                        <textarea id="custom-intervals" rows="6"></textarea>
-                    </label>
-                    <div class="filter-buttons">
-                        <div class="button-column">
-                            <button id="clear-intervals-btn" class="btn-secondary" type="button">Clear</button>
-                            <button id="filter-complex-btn" class="btn-secondary" type="button">Apply</button>
-                            <button id="filter-range-btn" class="btn-secondary" type="button">Apply</button>
-                            <button id="share-intervals-btn" class="btn-secondary" type="button">Share</button>
-                        </div>
-                        <div class="filter-labels">
-                            <div class="filter-spacer"></div>
-                            <label class="inline-number">
-                                Filter by complexity (num × denom):
-                                <input type="number" id="complexity-min" min="0" max="1000000" value="0" class="medium-number-input">
-                                to
-                                <input type="number" id="complexity-max" min="1" max="1000000" value="100" class="medium-number-input">
-                            </label>
-                            <label class="inline-number">
-                                Cent range:
-                                <input type="number" id="cent-min" min="0" max="1200" value="0" class="small-number-input">
-                                -
-                                <input type="number" id="cent-max" min="0" max="1200" value="1200" class="small-number-input">
-                                ¢
-                            </label>
-                            <label class="inline-number">
-                                Copy URL to share interval bank
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="settings-section">
-                <h3>Audio</h3>
-                <label>
-                    <input type="checkbox" id="sound-enabled" checked>
-                    Enable sound feedback
-                </label>
-                <label>
-                    <input type="checkbox" id="play-intervals" checked>
-                    Play intervals (hear the interval when question is shown)
-                </label>
-                <label>
-                    Waveform type:
-                    <select id="waveform-type">
-                        <option value="sine">Sine Wave</option>
-                        <option value="triangle">Triangle Wave</option>
-                        <option value="sawtooth" selected>Sawtooth Wave</option>
-                        <option value="square">Square Wave</option>
-                        <option value="filtered-square">Filtered Square Wave (1kHz LPF)</option>
-                        <option value="filtered-sawtooth">Filtered Sawtooth Wave (1kHz LPF)</option>
-                    </select>
-                </label>
-                <label>
-                    Release time (seconds):
-                    <input type="range" id="release-time" min="0.1" max="8" step="0.1" value="4">
-                    <span id="release-time-value">4.0</span>s
-                </label>
-                <label>
-                    <input type="checkbox" id="random-root" checked>
-                    Random root frequency (±600¢)
-                </label>
-            </div>
-
-            <div class="settings-section">
-                <h3>Game Options</h3>
-                <label>
-                    Number of rounds (times through all intervals):
-                    <input type="number" id="rounds" min="1" max="10" value="1">
-                </label>
-                <label>
-                    <input type="checkbox" id="hide-interval">
-                    Hide interval until after guess (audio-only mode)
-                </label>
-                <label>
-                    <input type="checkbox" id="repeat-missed">
-                    Repeat missed intervals (error &gt;
-                    <input type="number" id="repeat-threshold" min="0" max="100" step="0.1" value="5" style="width: 60px;">¢)
-                </label>
-                <label>
-                    <input type="checkbox" id="cent-mode">
-                    Reverse mode: Show cents, type ratio (e.g., show 701.96¢, type 3/2)
-                </label>
-            </div>
-
-            <button id="start-btn" class="btn-primary">Start Game</button>
-        </div>
-
-        <!-- Game Panel -->
-        <div id="game-panel" class="panel" style="display: none;">
-            <div class="score-display">
-                <div class="score-item">
-                    <span class="score-label">Timer:</span>
-                    <span id="timer">0:00.00</span>
-                </div>
-                <div class="score-item">
-                    <span class="score-label">Questions:</span>
-                    <span id="question-count">0</span>
-                </div>
-                <div class="score-item">
-                    <span class="score-label">Total Error:</span>
-                    <span id="total-score">0.00</span>
-                    <span class="score-label">¢</span>
-                </div>
-                <div class="score-item">
-                    <span class="score-label">Avg Error:</span>
-                    <span id="avg-score">0.00</span>
-                    <span class="score-label">¢</span>
-                </div>
-            </div>
-
-            <div class="settings-section" style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                <h3 style="margin-top: 0;">Audio Controls</h3>
-                <label>
-                    <input type="checkbox" id="sound-enabled-game" checked>
-                    Enable sound feedback
-                </label>
-                <label>
-                    <input type="checkbox" id="play-intervals-game" checked>
-                    Play intervals (hear the interval when question is shown)
-                </label>
-                <label>
-                    Waveform type:
-                    <select id="waveform-type-game">
-                        <option value="sine">Sine Wave</option>
-                        <option value="triangle">Triangle Wave</option>
-                        <option value="sawtooth" selected>Sawtooth Wave</option>
-                        <option value="square">Square Wave</option>
-                        <option value="filtered-square">Filtered Square Wave (1kHz LPF)</option>
-                        <option value="filtered-sawtooth">Filtered Sawtooth Wave (1kHz LPF)</option>
-                    </select>
-                </label>
-                <label>
-                    Release time (seconds):
-                    <input type="range" id="release-time-game" min="0.1" max="8" step="0.1" value="4">
-                    <span id="release-time-value-game">4.0</span>s
-                </label>
-                <button id="replay-interval-btn" class="btn-secondary" style="margin-top: 10px;">Replay Interval</button>
-            </div>
-
-            <div class="interval-display">
-                <div class="interval-label">Interval:</div>
-                <div id="interval-value" class="interval-value">3/2</div>
-            </div>
-
-            <div class="input-section">
-                <label for="answer-input" id="answer-label">Enter cents:</label>
-                <input type="text" id="answer-input" step="0.01" placeholder="0.00" autofocus>
-                <button id="submit-btn" class="btn-primary">Submit</button>
-            </div>
-
-            <div class="continuum-container">
-                <div class="continuum-labels">
-                    <span>0¢</span>
-                    <span class="mid-label">100¢</span>
-                    <span class="mid-label">200¢</span>
-                    <span class="mid-label">300¢</span>
-                    <span class="mid-label">400¢</span>
-                    <span class="mid-label">500¢</span>
-                    <span class="mid-label">600¢</span>
-                    <span class="mid-label">700¢</span>
-                    <span class="mid-label">800¢</span>
-                    <span class="mid-label">900¢</span>
-                    <span class="mid-label">1000¢</span>
-                    <span class="mid-label">1100¢</span>
-                    <span>1200¢</span>
-                </div>
-                <div class="continuum">
-                    <div class="continuum-track"></div>
-                    <!-- 100¢ notches (1-12 semitones) -->
-                    <div class="edo-notch" style="left: 0%"></div>
-                    <div class="edo-notch" style="left: 8.333%"></div>
-                    <div class="edo-notch" style="left: 16.667%"></div>
-                    <div class="edo-notch" style="left: 25%"></div>
-                    <div class="edo-notch" style="left: 33.333%"></div>
-                    <div class="edo-notch" style="left: 41.667%"></div>
-                    <div class="edo-notch" style="left: 50%"></div>
-                    <div class="edo-notch" style="left: 58.333%"></div>
-                    <div class="edo-notch" style="left: 66.667%"></div>
-                    <div class="edo-notch" style="left: 75%"></div>
-                    <div class="edo-notch" style="left: 83.333%"></div>
-                    <div class="edo-notch" style="left: 91.667%"></div>
-                    <div class="edo-notch" style="left: 100%"></div>
-                    <!-- Markers (hidden by default) -->
-                    <div id="correct-marker" class="continuum-marker correct-marker"></div>
-                    <div id="user-marker" class="continuum-marker user-marker"></div>
-                </div>
-            </div>
-
-            <div id="feedback" class="feedback"></div>
-
-            <div class="game-controls">
-                <button id="skip-btn" class="btn-secondary">Skip</button>
-                <button id="end-btn" class="btn-secondary">End Game</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js?v=4"></script>
-</body>
-</html>
