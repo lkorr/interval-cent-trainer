@@ -72,6 +72,8 @@ const hideIntervalInput = document.getElementById('hide-interval');
 const repeatMissedInput = document.getElementById('repeat-missed');
 const repeatThresholdInput = document.getElementById('repeat-threshold');
 const randomRootInput = document.getElementById('random-root');
+const centModeInput = document.getElementById('cent-mode');
+const answerLabel = document.getElementById('answer-label');
 
 // Game panel audio controls
 const soundEnabledGameInput = document.getElementById('sound-enabled-game');
@@ -94,6 +96,7 @@ let hideInterval = false;
 let numRounds = 1;
 let repeatMissed = false;
 let repeatThreshold = 5;
+let centMode = false;
 
 // Initialize audio context on first user interaction
 function initAudio() {
@@ -916,14 +919,26 @@ skipBtn.addEventListener('click', () => {
 
     // Reveal interval if it was hidden
     if (hideInterval) {
-        if (currentInterval.type === 'JI') {
-            intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+        if (centMode) {
+            intervalValue.textContent = currentAnswer.toFixed(2) + '¢';
         } else {
-            intervalValue.textContent = currentInterval.display;
+            if (currentInterval.type === 'JI') {
+                intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+            } else {
+                intervalValue.textContent = currentInterval.display;
+            }
         }
     }
 
-    feedback.textContent = `Skipped. The answer was ${currentAnswer.toFixed(2)}¢`;
+    // Prepare answer text based on mode
+    let answerText;
+    if (centMode) {
+        answerText = currentInterval.display;
+    } else {
+        answerText = currentAnswer.toFixed(2) + '¢';
+    }
+
+    feedback.textContent = `Skipped. The answer was ${answerText}`;
     feedback.className = 'feedback';
     feedback.style.background = '#fff3cd';
     feedback.style.color = '#856404';
@@ -967,6 +982,16 @@ function startGame() {
     numRounds = parseInt(roundsInput.value) || 1;
     repeatMissed = repeatMissedInput.checked;
     repeatThreshold = parseFloat(repeatThresholdInput.value) || 5;
+    centMode = centModeInput.checked;
+
+    // Update input label based on mode
+    if (centMode) {
+        answerLabel.textContent = 'Enter ratio (e.g., 3/2):';
+        answerInput.placeholder = '3/2';
+    } else {
+        answerLabel.textContent = 'Enter cents:';
+        answerInput.placeholder = '0.00';
+    }
 
     // Sync audio controls to game panel
     soundEnabledGameInput.checked = soundEnabled;
@@ -1179,12 +1204,18 @@ function nextQuestion() {
     if (hideInterval) {
         intervalValue.innerHTML = '<span class="hidden-interval">?</span>';
     } else {
-        if (currentInterval.type === 'JI') {
-            // Display JI intervals as vertical fractions
-            intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+        if (centMode) {
+            // In cent mode, show the cent value rounded to nearest hundredth
+            intervalValue.textContent = currentAnswer.toFixed(2) + '¢';
         } else {
-            // Display EDO intervals as normal text
-            intervalValue.textContent = currentInterval.display;
+            // Normal mode: show ratio/interval notation
+            if (currentInterval.type === 'JI') {
+                // Display JI intervals as vertical fractions
+                intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+            } else {
+                // Display EDO intervals as normal text
+                intervalValue.textContent = currentInterval.display;
+            }
         }
     }
     answerInput.value = '';
@@ -1215,11 +1246,46 @@ function nextQuestion() {
 function submitAnswer() {
     if (!gameActive) return;
 
-    const userAnswer = parseFloat(answerInput.value);
+    let userAnswer;
 
-    if (isNaN(userAnswer)) {
-        alert('Please enter a valid number');
-        return;
+    if (centMode) {
+        // In cent mode, expect ratio input (e.g., "3/2" or "5\12")
+        const answerText = answerInput.value.trim();
+
+        // Try parsing as JI ratio (e.g., "3/2")
+        const jiMatch = answerText.match(/^(\d+)\/(\d+)$/);
+        if (jiMatch) {
+            const num = parseInt(jiMatch[1]);
+            const den = parseInt(jiMatch[2]);
+            if (den === 0) {
+                alert('Please enter a valid ratio (denominator cannot be zero)');
+                return;
+            }
+            userAnswer = 1200 * Math.log2(num / den);
+        } else {
+            // Try parsing as EDO notation (e.g., "7\12")
+            const edoMatch = answerText.match(/^(-?\d+)\\(\d+)$/);
+            if (edoMatch) {
+                const step = parseInt(edoMatch[1]);
+                const edo = parseInt(edoMatch[2]);
+                if (edo === 0) {
+                    alert('Please enter a valid EDO notation (EDO cannot be zero)');
+                    return;
+                }
+                userAnswer = (step / edo) * 1200;
+            } else {
+                alert('Please enter a valid ratio (e.g., 3/2) or EDO notation (e.g., 7\\12)');
+                return;
+            }
+        }
+    } else {
+        // Normal mode: expect cent value
+        userAnswer = parseFloat(answerInput.value);
+
+        if (isNaN(userAnswer)) {
+            alert('Please enter a valid number');
+            return;
+        }
     }
 
     // Calculate error and time taken
@@ -1244,19 +1310,33 @@ function submitAnswer() {
 
     // Reveal interval if it was hidden
     if (hideInterval) {
-        if (currentInterval.type === 'JI') {
-            intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+        if (centMode) {
+            intervalValue.textContent = currentAnswer.toFixed(2) + '¢';
         } else {
-            intervalValue.textContent = currentInterval.display;
+            if (currentInterval.type === 'JI') {
+                intervalValue.innerHTML = `<span class="fraction"><span class="numerator">${currentInterval.numerator}</span><span class="denominator">${currentInterval.denominator}</span></span>`;
+            } else {
+                intervalValue.textContent = currentInterval.display;
+            }
         }
     }
 
+    // Prepare correct answer text based on mode
+    let correctAnswerText;
+    if (centMode) {
+        // In cent mode, show the ratio as the correct answer
+        correctAnswerText = currentInterval.display;
+    } else {
+        // In normal mode, show cents as the correct answer
+        correctAnswerText = currentAnswer.toFixed(2) + '¢';
+    }
+
     // Show feedback and play sound
-    feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+    feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
 
     if (error < 1) {
         feedback.className = 'feedback correct';
-        feedback.textContent = `Excellent! Off by only ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.textContent = `Excellent! Off by only ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
         feedback.style.background = '';
         feedback.style.color = '';
         feedback.style.border = '';
@@ -1265,7 +1345,7 @@ function submitAnswer() {
         intervalsByAccuracy.perfect.push({ ...currentInterval, error, timeTaken });
     } else if (error < 5) {
         feedback.className = 'feedback correct';
-        feedback.textContent = `Great! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.textContent = `Great! Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
         feedback.style.background = '';
         feedback.style.color = '';
         feedback.style.border = '';
@@ -1275,7 +1355,7 @@ function submitAnswer() {
     } else if (error < 10) {
         // Light green/yellow (lime-ish)
         feedback.className = 'feedback good';
-        feedback.textContent = `Good! Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.textContent = `Good! Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
         feedback.style.background = '#e7f4d3';
         feedback.style.color = '#5a7a2c';
         feedback.style.border = '2px solid #c4db9b';
@@ -1286,7 +1366,7 @@ function submitAnswer() {
     } else if (error < 25) {
         // Yellow
         feedback.className = 'feedback medium';
-        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
         feedback.style.background = '#fff3cd';
         feedback.style.color = '#856404';
         feedback.style.border = '2px solid #ffeaa7';
@@ -1297,7 +1377,7 @@ function submitAnswer() {
     } else if (error < 40) {
         // Orange
         feedback.className = 'feedback poor';
-        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
         feedback.style.background = '#ffe5cc';
         feedback.style.color = '#cc5500';
         feedback.style.border = '2px solid #ffb366';
@@ -1308,7 +1388,7 @@ function submitAnswer() {
     } else {
         // Red
         feedback.className = 'feedback incorrect';
-        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${currentAnswer.toFixed(2)}¢)`;
+        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
         feedback.style.background = '';
         feedback.style.color = '';
         feedback.style.border = '';
