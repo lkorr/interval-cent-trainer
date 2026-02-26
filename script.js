@@ -147,6 +147,81 @@ function isPowerOf2(num) {
     return num > 0 && (num & (num - 1)) === 0;
 }
 
+// Helper function to get octave-reduced ratio for a number
+// Returns [numerator, denominator] for n reduced to one octave [1, 2)
+function getOctaveReducedRatio(n) {
+    let num = n;
+    let denom = 1;
+
+    // Reduce to [1, 2) by dividing by powers of 2
+    while (num >= 2 * denom) {
+        denom *= 2;
+    }
+
+    return [num, denom];
+}
+
+// Helper function to convert ratio to cents
+function ratioCents(num, denom) {
+    return 1200 * Math.log2(num / denom);
+}
+
+// Helper to apply mod 1200 to keep cents in [0, 1200) range
+function mod1200(cents) {
+    return ((cents % 1200) + 1200) % 1200;
+}
+
+// Generate explanation for how to calculate a JI interval
+function getIntervalExplanation(numerator, denominator, correctCents) {
+    // Check if it's a prime/2^n (must be memorized) - don't show explanation
+    if (isPrime(numerator) && isPowerOf2(denominator)) {
+        return '';
+    }
+
+    // Check if it's 2^n/prime (reciprocal formula)
+    if (isPowerOf2(numerator) && isPrime(denominator)) {
+        const [denNum, denDenom] = getOctaveReducedRatio(denominator);
+        const denCents = mod1200(ratioCents(denNum, denDenom));
+        const result = mod1200(1200 - denCents);
+        return `<br><em>1200¢ - ${denCents.toFixed(2)}¢ = <strong>${result.toFixed(2)}¢</strong></em>`;
+    }
+
+    // It's composite - determine whether to use subtraction or addition
+    const [numNum, numDenom] = getOctaveReducedRatio(numerator);
+    const [denNum, denDenom] = getOctaveReducedRatio(denominator);
+    const numCents = mod1200(ratioCents(numNum, numDenom));
+    const denCents = mod1200(ratioCents(denNum, denDenom));
+
+    const difference = numCents - denCents;
+
+    // Simplify: if both have same denominator, just show numerators
+    if (numDenom === denDenom) {
+        if (difference < 0) {
+            // Use multiplication with reciprocal - calculate reciprocal properly
+            const reciprocalCents = mod1200(ratioCents(denDenom, denNum));
+            const result = mod1200(numCents + reciprocalCents);
+            return `<br><em>${numCents.toFixed(2)}¢ + ${reciprocalCents.toFixed(2)}¢ = <strong>${result.toFixed(2)}¢</strong></em>`;
+        } else {
+            // Use division
+            let result = mod1200(difference);
+            return `<br><em>${numCents.toFixed(2)}¢ - ${denCents.toFixed(2)}¢ = <strong>${result.toFixed(2)}¢</strong></em>`;
+        }
+    }
+
+    if (difference < 0) {
+        // Use multiplication method with reciprocal
+        const reciprocalNum = denDenom;
+        const reciprocalDenom = denNum;
+        const reciprocalCents = mod1200(ratioCents(reciprocalNum, reciprocalDenom));
+        const result = mod1200(numCents + reciprocalCents);
+        return `<br><em>${numCents.toFixed(2)}¢ + ${reciprocalCents.toFixed(2)}¢ = <strong>${result.toFixed(2)}¢</strong></em>`;
+    } else {
+        // Use division method
+        let result = mod1200(difference);
+        return `<br><em>${numCents.toFixed(2)}¢ - ${denCents.toFixed(2)}¢ = <strong>${result.toFixed(2)}¢</strong></em>`;
+    }
+}
+
 // Level configuration
 function getLevelConfig(level) {
     const configs = {
@@ -1791,7 +1866,12 @@ function submitAnswer() {
     } else if (error < 10) {
         // Light green/yellow (lime-ish)
         feedback.className = 'feedback good';
-        feedback.textContent = `Good! Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        let feedbackText = `Good! Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        // Add explanation for JI intervals with error > 1c
+        if (currentInterval.type === 'JI' && error > 1) {
+            feedbackText += getIntervalExplanation(currentInterval.numerator, currentInterval.denominator, currentAnswer);
+        }
+        feedback.innerHTML = feedbackText;
         feedback.style.background = '#e7f4d3';
         feedback.style.color = '#5a7a2c';
         feedback.style.border = '2px solid #c4db9b';
@@ -1802,7 +1882,12 @@ function submitAnswer() {
     } else if (error < 25) {
         // Yellow
         feedback.className = 'feedback medium';
-        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        let feedbackText = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        // Add explanation for JI intervals with error > 1c
+        if (currentInterval.type === 'JI' && error > 1) {
+            feedbackText += getIntervalExplanation(currentInterval.numerator, currentInterval.denominator, currentAnswer);
+        }
+        feedback.innerHTML = feedbackText;
         feedback.style.background = '#fff3cd';
         feedback.style.color = '#856404';
         feedback.style.border = '2px solid #ffeaa7';
@@ -1813,7 +1898,12 @@ function submitAnswer() {
     } else if (error < 40) {
         // Orange
         feedback.className = 'feedback poor';
-        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        let feedbackText = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        // Add explanation for JI intervals with error > 1c
+        if (currentInterval.type === 'JI' && error > 1) {
+            feedbackText += getIntervalExplanation(currentInterval.numerator, currentInterval.denominator, currentAnswer);
+        }
+        feedback.innerHTML = feedbackText;
         feedback.style.background = '#ffe5cc';
         feedback.style.color = '#cc5500';
         feedback.style.border = '2px solid #ffb366';
@@ -1824,7 +1914,12 @@ function submitAnswer() {
     } else {
         // Red
         feedback.className = 'feedback incorrect';
-        feedback.textContent = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        let feedbackText = `Off by ${error.toFixed(2)}¢ (Correct: ${correctAnswerText})`;
+        // Add explanation for JI intervals with error > 1c
+        if (currentInterval.type === 'JI' && error > 1) {
+            feedbackText += getIntervalExplanation(currentInterval.numerator, currentInterval.denominator, currentAnswer);
+        }
+        feedback.innerHTML = feedbackText;
         feedback.style.background = '';
         feedback.style.color = '';
         feedback.style.border = '';

@@ -697,6 +697,40 @@ textarea:focus {
     .generator-container {
         flex-direction: column;
     }
+
+    /* Make audio controls more touch-friendly on mobile */
+    .audio-controls-compact {
+        padding: 12px 15px !important;
+    }
+
+    .audio-controls-compact h3 {
+        font-size: 1.1em !important;
+        margin-bottom: 10px !important;
+    }
+
+    .audio-controls-compact label {
+        font-size: 0.95em !important;
+        margin-bottom: 10px !important;
+    }
+
+    .audio-controls-compact select {
+        font-size: 0.95em !important;
+        padding: 8px !important;
+    }
+
+    .audio-controls-compact input[type="checkbox"] {
+        transform: scale(1.4);
+    }
+
+    .audio-controls-compact input[type="range"] {
+        height: 8px !important;
+    }
+
+    .audio-controls-compact #replay-interval-btn {
+        padding: 10px 16px !important;
+        font-size: 0.95em !important;
+        margin-top: 10px !important;
+    }
 }
 
 /* Quick Settings Section */
