@@ -132,37 +132,26 @@ function showCustomMode() {
 // Level configuration
 function getLevelConfig(level) {
     const configs = {
-        // Limit 20
-        1: { mode: 'primes-2x', limit: 20, primeLimit: 17, complexityMin: 0, complexityMax: 1000000 },
-        2: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 100 },
-        3: { mode: 'simple-limit', limit: 20, complexityMin: 100, complexityMax: 150 },
-        4: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 150 },
-        5: { mode: 'simple-limit', limit: 20, complexityMin: 150, complexityMax: 200 },
-        6: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 200 },
-        7: { mode: 'simple-limit', limit: 20, complexityMin: 200, complexityMax: 300 },
-        8: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 300 },
-        9: { mode: 'simple-limit', limit: 20, complexityMin: 300, complexityMax: 400 },
-        10: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 400 },
-        11: { mode: 'simple-limit', limit: 20, complexityMin: 0, complexityMax: 1000000 },
-        // Limit 31
-        12: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000 },
-        13: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 100 },
-        14: { mode: 'simple-limit', limit: 31, complexityMin: 100, complexityMax: 150 },
-        15: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 150 },
-        16: { mode: 'simple-limit', limit: 31, complexityMin: 150, complexityMax: 200 },
-        17: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 200 },
-        18: { mode: 'simple-limit', limit: 31, complexityMin: 200, complexityMax: 300 },
-        19: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 300 },
-        20: { mode: 'simple-limit', limit: 31, complexityMin: 300, complexityMax: 400 },
-        21: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 400 },
-        22: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 1000000 }
+        1: { mode: 'primes-2x', limit: 31, primeLimit: 31, complexityMin: 0, complexityMax: 1000000 },
+        2: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 100 },
+        3: { mode: 'simple-limit', limit: 31, complexityMin: 100, complexityMax: 150 },
+        4: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 150 },
+        5: { mode: 'simple-limit', limit: 31, complexityMin: 150, complexityMax: 200 },
+        6: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 200 },
+        7: { mode: 'simple-limit', limit: 31, complexityMin: 200, complexityMax: 300 },
+        8: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 300 },
+        9: { mode: 'simple-limit', limit: 31, complexityMin: 300, complexityMax: 400 },
+        10: { mode: 'simple-limit', limit: 31, complexityMin: 0, complexityMax: 400 }
     };
     return configs[level];
 }
 
-function configureLevel(level) {
+function configureLevel(level, reverseMode) {
     const config = getLevelConfig(level);
     if (!config) return;
+
+    // Set cent mode based on mode selection
+    centModeInput.checked = reverseMode;
 
     // Set generator mode
     const modeRadio = document.querySelector(`input[name="generator-mode"][value="${config.mode}"]`);
@@ -189,12 +178,13 @@ function configureLevel(level) {
 customModeBtn.addEventListener('click', showCustomMode);
 backToLevelsBtn.addEventListener('click', showLevelSelect);
 
-// Event listeners for level buttons
-document.querySelectorAll('.level-btn').forEach(btn => {
+// Event listeners for mode buttons
+document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const level = parseInt(btn.dataset.level);
+        const reverseMode = btn.dataset.mode === 'reverse';
         initAudio();
-        configureLevel(level);
+        configureLevel(level, reverseMode);
         startGame();
     });
 });

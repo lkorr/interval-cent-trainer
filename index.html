@@ -15,110 +15,126 @@
 
         <!-- Level Selection Panel -->
         <div id="level-select-panel" class="panel">
-            <h2>Select Difficulty Level</h2>
+            <h2>Select Level</h2>
+            <p class="subtitle">All levels use fraction limit 31</p>
 
-            <div class="level-section">
-                <h3>Fraction Limit: 20</h3>
-                <div class="level-grid">
-                    <button class="level-btn" data-level="1">
-                        <span class="level-number">Level 1</span>
-                        <span class="level-desc">Primes/2^x (limit 17)</span>
-                    </button>
-                    <button class="level-btn" data-level="2">
-                        <span class="level-number">Level 2</span>
-                        <span class="level-desc">All fractions (0-100 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="3">
-                        <span class="level-number">Level 3</span>
-                        <span class="level-desc">All fractions (100-150 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="4">
-                        <span class="level-number">Level 4</span>
-                        <span class="level-desc">All fractions (0-150 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="5">
-                        <span class="level-number">Level 5</span>
-                        <span class="level-desc">All fractions (150-200 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="6">
-                        <span class="level-number">Level 6</span>
-                        <span class="level-desc">All fractions (0-200 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="7">
-                        <span class="level-number">Level 7</span>
-                        <span class="level-desc">All fractions (200-300 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="8">
-                        <span class="level-number">Level 8</span>
-                        <span class="level-desc">All fractions (0-300 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="9">
-                        <span class="level-number">Level 9</span>
-                        <span class="level-desc">All fractions (300-400 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="10">
-                        <span class="level-number">Level 10</span>
-                        <span class="level-desc">All fractions (0-400 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="11">
-                        <span class="level-number">Level 11</span>
-                        <span class="level-desc">All fractions (no limit)</span>
-                    </button>
+            <div class="level-group">
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 1</span>
+                        <span class="level-subtitle">Primes/2^x (limit 31)</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="1" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="1" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 2</span>
+                        <span class="level-subtitle">Complexity 0-100</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="2" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="2" data-mode="reverse">Reverse Mode</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="level-section">
-                <h3>Fraction Limit: 31</h3>
-                <div class="level-grid">
-                    <button class="level-btn" data-level="12">
-                        <span class="level-number">Level 12</span>
-                        <span class="level-desc">Primes/2^x (limit 31)</span>
-                    </button>
-                    <button class="level-btn" data-level="13">
-                        <span class="level-number">Level 13</span>
-                        <span class="level-desc">All fractions (0-100 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="14">
-                        <span class="level-number">Level 14</span>
-                        <span class="level-desc">All fractions (100-150 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="15">
-                        <span class="level-number">Level 15</span>
-                        <span class="level-desc">All fractions (0-150 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="16">
-                        <span class="level-number">Level 16</span>
-                        <span class="level-desc">All fractions (150-200 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="17">
-                        <span class="level-number">Level 17</span>
-                        <span class="level-desc">All fractions (0-200 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="18">
-                        <span class="level-number">Level 18</span>
-                        <span class="level-desc">All fractions (200-300 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="19">
-                        <span class="level-number">Level 19</span>
-                        <span class="level-desc">All fractions (0-300 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="20">
-                        <span class="level-number">Level 20</span>
-                        <span class="level-desc">All fractions (300-400 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="21">
-                        <span class="level-number">Level 21</span>
-                        <span class="level-desc">All fractions (0-400 complexity)</span>
-                    </button>
-                    <button class="level-btn" data-level="22">
-                        <span class="level-number">Level 22</span>
-                        <span class="level-desc">All fractions (no limit)</span>
-                    </button>
+            <div class="level-group">
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 3</span>
+                        <span class="level-subtitle">Complexity 100-150</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="3" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="3" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 4</span>
+                        <span class="level-subtitle">Complexity 0-150</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="4" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="4" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="level-group">
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 5</span>
+                        <span class="level-subtitle">Complexity 150-200</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="5" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="5" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 6</span>
+                        <span class="level-subtitle">Complexity 0-200</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="6" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="6" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="level-group">
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 7</span>
+                        <span class="level-subtitle">Complexity 200-300</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="7" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="7" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 8</span>
+                        <span class="level-subtitle">Complexity 0-300</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="8" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="8" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="level-group">
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 9</span>
+                        <span class="level-subtitle">Complexity 300-400</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="9" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="9" data-mode="reverse">Reverse Mode</button>
+                    </div>
+                </div>
+                <div class="level-card">
+                    <div class="level-header">
+                        <span class="level-title">Level 10</span>
+                        <span class="level-subtitle">Complexity 0-400</span>
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn" data-level="10" data-mode="normal">Normal Mode</button>
+                        <button class="mode-btn" data-level="10" data-mode="reverse">Reverse Mode</button>
+                    </div>
                 </div>
             </div>
 
             <div class="custom-mode-section">
-                <button id="custom-mode-btn" class="btn-secondary">Custom Mode</button>
+                <button id="custom-mode-btn">Custom Mode</button>
             </div>
         </div>
 
