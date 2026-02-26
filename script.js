@@ -1278,19 +1278,17 @@ answerInput.addEventListener('keypress', (e) => {
     }
 });
 
-// Global keyboard shortcut for replay
-document.addEventListener('keypress', (e) => {
+// Prevent non-numeric characters (except decimal, minus, and slash for fractions) in answer input
+answerInput.addEventListener('keydown', (e) => {
+    // Special handling for 'R' key - replay interval
     if (e.key === 'r' || e.key === 'R') {
-        // Replay if in game, regardless of input focus
         if (gameActive && currentAnswer !== null) {
             e.preventDefault();
             playIntervalAudio(currentAnswer);
         }
+        return;
     }
-});
 
-// Prevent non-numeric characters (except decimal, minus, and slash for fractions) in answer input
-answerInput.addEventListener('keydown', (e) => {
     const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
     const allowedChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '/'];
 
