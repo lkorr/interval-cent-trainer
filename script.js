@@ -326,6 +326,16 @@ function filterReciprocalsOnly() {
 
 // Event listeners for navigation
 customModeBtn.addEventListener('click', showCustomMode);
+const customModeBtnGame = document.getElementById('custom-mode-btn-game');
+if (customModeBtnGame) {
+    customModeBtnGame.addEventListener('click', () => {
+        // End the current game and go to custom mode
+        if (gameActive) {
+            endGame();
+        }
+        showCustomMode();
+    });
+}
 backToLevelsBtn.addEventListener('click', showLevelSelect);
 
 // Function to count intervals for a level
@@ -1271,21 +1281,46 @@ answerInput.addEventListener('keypress', (e) => {
 // Global keyboard shortcut for replay
 document.addEventListener('keypress', (e) => {
     if (e.key === 'r' || e.key === 'R') {
-        // Only replay if in game and not typing in input
-        if (gameActive && document.activeElement !== answerInput) {
-            if (currentAnswer !== null) {
-                playIntervalAudio(currentAnswer);
-            }
+        // Replay if in game, regardless of input focus
+        if (gameActive && currentAnswer !== null) {
+            e.preventDefault();
+            playIntervalAudio(currentAnswer);
         }
+    }
+});
+
+// Prevent non-numeric characters (except decimal, minus, and slash for fractions) in answer input
+answerInput.addEventListener('keydown', (e) => {
+    const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+    const allowedChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '/'];
+
+    // Allow special keys
+    if (allowedKeys.includes(e.key)) {
+        return;
+    }
+
+    // Allow Ctrl/Cmd shortcuts (like Ctrl+A, Ctrl+C, etc)
+    if (e.ctrlKey || e.metaKey) {
+        return;
+    }
+
+    // Block letters and other non-numeric characters
+    if (!allowedChars.includes(e.key)) {
+        e.preventDefault();
     }
 });
 
 // Help modal functionality
 const helpBtn = document.getElementById('help-btn');
+const helpBtnGame = document.getElementById('help-btn-game');
 const helpModal = document.getElementById('help-modal');
 const closeHelpBtn = document.getElementById('close-help-btn');
 
 helpBtn.addEventListener('click', () => {
+    helpModal.style.display = 'flex';
+});
+
+helpBtnGame.addEventListener('click', () => {
     helpModal.style.display = 'flex';
 });
 

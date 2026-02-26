@@ -149,6 +149,37 @@ h2 {
     transform: scale(0.95);
 }
 
+.game-panel-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+#custom-mode-btn-game {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#custom-mode-btn-game:hover {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46a8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+}
+
+#custom-mode-btn-game:active {
+    transform: translateY(0) scale(0.98);
+}
+
 /* Help Modal */
 .help-modal {
     position: fixed;
