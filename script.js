@@ -150,9 +150,9 @@ function isPowerOf2(num) {
 // Level configuration
 function getLevelConfig(level) {
     const configs = {
-        1: { mode: 'primes-2x', limit: 40, primeLimit: 17, complexityMin: 0, complexityMax: 1000000, filterType: 'primes-only' },
-        2: { mode: 'primes-2x', limit: 40, primeLimit: 17, complexityMin: 0, complexityMax: 1000000, filterType: 'reciprocals-only' },
-        3: { mode: 'primes-2x', limit: 40, primeLimit: 17, complexityMin: 0, complexityMax: 1000000 },
+        1: { mode: 'primes-2x', limit: 40, primeLimit: 19, complexityMin: 0, complexityMax: 1000000, filterType: 'primes-only' },
+        2: { mode: 'primes-2x', limit: 40, primeLimit: 19, complexityMin: 0, complexityMax: 1000000, filterType: 'reciprocals-only' },
+        3: { mode: 'primes-2x', limit: 40, primeLimit: 19, complexityMin: 0, complexityMax: 1000000 },
         4: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 50 },
         5: { mode: 'simple-limit', limit: 40, complexityMin: 0, complexityMax: 100 },
         6: { mode: 'simple-limit', limit: 40, complexityMin: 100, complexityMax: 150 },
