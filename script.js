@@ -618,7 +618,7 @@ function generateIntervals() {
         const primes = getPrimesUpTo(primeLimit).filter(p => p > 2); // Exclude 2
 
         if (generatorMode === 'primes-2x') {
-            // Generate primes/2^x (primes only in numerator)
+            // Generate primes/2^x (primes only in numerator) and their reciprocals
             for (const prime of primes) {
                 for (let exp = 1; exp <= maxExponent; exp++) {
                     const numerator = Math.pow(prime, exp);
@@ -628,6 +628,16 @@ function generateIntervals() {
                         const ratio = numerator / denominator;
                         if (ratio >= 1 && ratio < 2) {
                             intervals.add(`${numerator}/${denominator}`);
+                        }
+                    }
+
+                    // Also generate reciprocals (2^x/prime)
+                    const denominator = numerator; // The prime power becomes denominator
+                    for (let pow2 = 0; pow2 <= 10; pow2++) {
+                        const recipNumerator = Math.pow(2, pow2);
+                        const ratio = recipNumerator / denominator;
+                        if (ratio >= 1 && ratio < 2) {
+                            intervals.add(`${recipNumerator}/${denominator}`);
                         }
                     }
                 }
