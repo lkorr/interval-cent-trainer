@@ -52,7 +52,8 @@ const customIntervalsInput = document.getElementById('custom-intervals');
 const primeLimitInput = document.getElementById('prime-limit');
 const primeExponentInput = document.getElementById('prime-exponent');
 const jiLimitInput = document.getElementById('ji-limit');
-const complexityLimitInput = document.getElementById('complexity-limit');
+const complexityMinInput = document.getElementById('complexity-min');
+const complexityMaxInput = document.getElementById('complexity-max');
 const generateIntervalsBtn = document.getElementById('generate-intervals-btn');
 const filterComplexBtn = document.getElementById('filter-complex-btn');
 const filterRangeBtn = document.getElementById('filter-range-btn');
@@ -360,7 +361,8 @@ function filterComplexIntervals() {
     const customText = customIntervalsInput.value.trim();
     if (!customText) return;
 
-    const complexityLimit = parseInt(complexityLimitInput.value) || 100;
+    const complexityMin = parseInt(complexityMinInput.value) || 0;
+    const complexityMax = parseInt(complexityMaxInput.value) || 100;
     const lines = customText.split('\n');
     const filtered = [];
 
@@ -373,8 +375,9 @@ function filterComplexIntervals() {
         if (jiMatch) {
             const num = parseInt(jiMatch[1]);
             const den = parseInt(jiMatch[2]);
+            const complexity = num * den;
 
-            if ((num * den) <= complexityLimit) {
+            if (complexity >= complexityMin && complexity <= complexityMax) {
                 filtered.push(line);
             }
             continue;
@@ -458,7 +461,8 @@ function shareIntervals() {
         edoUseApproximations: edoUseApproximations.checked,
         edoApproximations: edoApproximations.value,
         // Filter settings
-        complexityLimit: complexityLimitInput.value,
+        complexityMin: complexityMinInput.value,
+        complexityMax: complexityMaxInput.value,
         centMin: centMinInput.value,
         centMax: centMaxInput.value,
         // Audio settings
@@ -531,7 +535,12 @@ function loadIntervalsFromURL() {
             }
 
             // Load filter settings
-            if (settings.complexityLimit) complexityLimitInput.value = settings.complexityLimit;
+            if (settings.complexityMin !== undefined) complexityMinInput.value = settings.complexityMin;
+            if (settings.complexityMax !== undefined) complexityMaxInput.value = settings.complexityMax;
+            // Fallback for old format that only had complexityLimit
+            if (settings.complexityLimit !== undefined && settings.complexityMax === undefined) {
+                complexityMaxInput.value = settings.complexityLimit;
+            }
             if (settings.centMin) centMinInput.value = settings.centMin;
             if (settings.centMax) centMaxInput.value = settings.centMax;
 

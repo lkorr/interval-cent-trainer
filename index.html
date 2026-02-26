@@ -106,9 +106,10 @@
                         <div class="filter-labels">
                             <div class="filter-spacer"></div>
                             <label class="inline-number">
-                                Remove commas/complex intervals (num × denom &gt;
-                                <input type="number" id="complexity-limit" min="1" max="1000000" value="100" class="medium-number-input">
-                                )
+                                Filter by complexity (num × denom):
+                                <input type="number" id="complexity-min" min="0" max="1000000" value="0" class="medium-number-input">
+                                to
+                                <input type="number" id="complexity-max" min="1" max="1000000" value="100" class="medium-number-input">
                             </label>
                             <label class="inline-number">
                                 Cent range:
