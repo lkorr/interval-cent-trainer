@@ -100,23 +100,22 @@ h2 {
 
 #custom-mode-btn-top {
     padding: 10px 24px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1em;
-    font-weight: 700;
+    font-size: 0.95em;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(102,126,234,0.3);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(72,187,120,0.3);
+    letter-spacing: 0.3px;
 }
 
 #custom-mode-btn-top:hover {
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46a8 100%);
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+    box-shadow: 0 4px 12px rgba(72,187,120,0.4);
 }
 
 #custom-mode-btn-top:active {
@@ -153,31 +152,6 @@ h2 {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 15px;
-}
-
-#custom-mode-btn-game {
-    padding: 8px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.9em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(102,126,234,0.3);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#custom-mode-btn-game:hover {
-    background: linear-gradient(135deg, #5a67d8 0%, #6b46a8 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102,126,234,0.4);
-}
-
-#custom-mode-btn-game:active {
-    transform: translateY(0) scale(0.98);
 }
 
 /* Help Modal */

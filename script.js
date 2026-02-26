@@ -326,16 +326,6 @@ function filterReciprocalsOnly() {
 
 // Event listeners for navigation
 customModeBtn.addEventListener('click', showCustomMode);
-const customModeBtnGame = document.getElementById('custom-mode-btn-game');
-if (customModeBtnGame) {
-    customModeBtnGame.addEventListener('click', () => {
-        // End the current game and go to custom mode
-        if (gameActive) {
-            endGame();
-        }
-        showCustomMode();
-    });
-}
 backToLevelsBtn.addEventListener('click', showLevelSelect);
 
 // Function to count intervals for a level
